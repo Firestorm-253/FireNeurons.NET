@@ -10,6 +10,7 @@ public class Neuron
     public double Value { get; set; }
     public double Blank { get; set; }
     
+    public bool IsWorking => (this.Connections.Count != 0);
     public Neuron(NeuronIndex neuronIndex, Activation activation)
     {
         this.NeuronIndex = neuronIndex;
@@ -22,12 +23,31 @@ public class Neuron
 
         // ToDo: sum all connections
 
-        this.Feed(sum);
+        this.Set(sum);
     }
 
-    public void Feed(double blank)
+    private void Set(double blank)
     {
         this.Blank = blank;
         this.Value = this.Blank.Activate(this.Activation);
+    }
+    public void Feed(double blank)
+    {
+        if (this.IsWorking)
+        {
+            throw new Exception("ERROR: Can't feed a working neuron!");
+        }
+
+        this.Set(blank);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Neuron neuron)
+        {
+            return false;
+        }
+
+        return this.NeuronIndex.Equals(neuron.NeuronIndex);
     }
 }
