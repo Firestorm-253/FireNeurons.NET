@@ -7,8 +7,15 @@ public class Neuron
     public NeuronIndex NeuronIndex { get; init; }
     public Activation Activation { get; init; }
 
-    public double Value { get; set; }
     public double Blank { get; set; }
+
+    public bool CalculationNeeded { get; set; }
+    private double _value;
+    public double Value
+    {
+        get => this.CalculationNeeded ? this.CalculateValue() : this._value;
+        set => this._value = value;
+    }
 
     public bool IsWorking => (this.Connections.Count != 0);
 
@@ -18,19 +25,21 @@ public class Neuron
         this.Activation = activation;
     }
 
-    public void CalculateValue()
+    public double CalculateValue()
     {
+        this.CalculationNeeded = false;
+
         double sum = 0;
 
         // ToDo: sum all connections
 
-        this.Set(sum);
+        return this.Set(sum);
     }
 
-    private void Set(double blank)
+    private double Set(double blank)
     {
         this.Blank = blank;
-        this.Value = this.Blank.Activate(this.Activation);
+        return this.Value = this.Blank.Activate(this.Activation);
     }
 
     public void Feed(double blank)
