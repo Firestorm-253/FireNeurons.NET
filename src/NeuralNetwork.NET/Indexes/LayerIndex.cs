@@ -2,7 +2,7 @@
 
 namespace NeuralNetwork.NET.Indexes;
 
-public struct LayerIndex : IEquatable<LayerIndex>
+public readonly struct LayerIndex : IEquatable<LayerIndex>
 {
     public int Index { get; init; }
 
