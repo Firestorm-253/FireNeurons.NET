@@ -20,5 +20,4 @@ public struct NeuronIndex : IEquatable<NeuronIndex>
     public static bool operator !=(NeuronIndex a, NeuronIndex b) => !a.Equals(b);
 
     public static implicit operator NeuronIndex((int, LayerIndex) index) => new(index.Item1, index.Item2);
-    public static implicit operator NeuronIndex((int, int, LayerIndex) index) => new(index.Item1, (index.Item2, index.Item3));
 }
