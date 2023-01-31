@@ -11,9 +11,11 @@ public struct LayerIndex : IEquatable<LayerIndex>
         this.Index = index;
     }
 
-    public override bool Equals([NotNullWhen(true)] object? value) => (value is LayerIndex index) && (this.Index.Equals(index.Index) && this.Index.Equals(index.Index));
-
+    public override bool Equals([NotNullWhen(true)] object? value) => (value is LayerIndex index) && this.Index.Equals(index.Index);
     public bool Equals(LayerIndex other) => this.Index == other.Index;
+
+    public static bool operator ==(LayerIndex a, LayerIndex b) => a.Equals(b);
+    public static bool operator !=(LayerIndex a, LayerIndex b) => !a.Equals(b);
 
     public static implicit operator LayerIndex(int index) => new(index);
 }
