@@ -1,8 +1,8 @@
 ﻿Indexes.LayerIndex layerIndex = i;
 
-Indexes.LevelIndex levelIndex = (i, 0);
-Indexes.LevelIndex levelIndex = (i, layerIndex);
+Indexes.LayerIndex layerIndex = (i, 0);
+Indexes.LayerIndex layerIndex = (i, layerIndex);
 
 Indexes.NeuronIndex neuronIndex = (i, 0, 0);
 Indexes.NeuronIndex neuronIndex = (i, (0, 0));
-Indexes.NeuronIndex neuronIndex = (i, levelIndex);
+Indexes.NeuronIndex neuronIndex = (i, layerIndex);
