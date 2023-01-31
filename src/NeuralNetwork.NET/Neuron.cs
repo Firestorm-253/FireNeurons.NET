@@ -9,8 +9,9 @@ public class Neuron
 
     public double Value { get; set; }
     public double Blank { get; set; }
-    
+
     public bool IsWorking => (this.Connections.Count != 0);
+
     public Neuron(NeuronIndex neuronIndex, Activation activation)
     {
         this.NeuronIndex = neuronIndex;
@@ -31,6 +32,7 @@ public class Neuron
         this.Blank = blank;
         this.Value = this.Blank.Activate(this.Activation);
     }
+
     public void Feed(double blank)
     {
         if (this.IsWorking)
