@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace NeuralNetwork.NET.Indexes;
 
@@ -16,9 +11,9 @@ public struct LayerIndex : IEquatable<LayerIndex>
         this.Index = index;
     }
 
-    public override bool Equals([NotNullWhen(true)] object? value) => (value is LayerIndex index) && (Index.Equals(index.Index) && Index.Equals(index.Index));
+    public override bool Equals([NotNullWhen(true)] object? value) => (value is LayerIndex index) && (this.Index.Equals(index.Index) && this.Index.Equals(index.Index));
 
-    public bool Equals(LayerIndex other) => Index == other.Index;
+    public bool Equals(LayerIndex other) => this.Index == other.Index;
 
     public static implicit operator LayerIndex(int index) => new(index);
 }
