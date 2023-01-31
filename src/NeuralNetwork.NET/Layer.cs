@@ -38,4 +38,8 @@ public class Layer
 
         return this.LayerIndex.Equals(layer.LayerIndex);
     }
+    public override int GetHashCode()
+    {
+        return this.LayerIndex.GetHashCode();
+    }
 }

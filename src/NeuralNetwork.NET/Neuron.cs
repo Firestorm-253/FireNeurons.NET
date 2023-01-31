@@ -52,4 +52,8 @@ public class Neuron
 
         return this.NeuronIndex.Equals(neuron.NeuronIndex);
     }
+    public override int GetHashCode()
+    {
+        return this.NeuronIndex.GetHashCode();
+    }
 }

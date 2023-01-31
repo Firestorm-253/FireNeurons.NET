@@ -15,6 +15,7 @@ public struct NeuronIndex : IEquatable<NeuronIndex>
 
     public override bool Equals([NotNullWhen(true)] object? value) => (value is NeuronIndex index) && (this.Index.Equals(index.Index) && this.LayerIndex.Equals(index.LayerIndex));
     public bool Equals(NeuronIndex other) => this.Index == other.Index;
+    public override int GetHashCode() => HashCode.Combine(this.Index, this.LayerIndex);
 
     public static bool operator ==(NeuronIndex a, NeuronIndex b) => a.Equals(b);
     public static bool operator !=(NeuronIndex a, NeuronIndex b) => !a.Equals(b);
