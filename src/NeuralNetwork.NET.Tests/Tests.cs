@@ -24,6 +24,8 @@ public class Tests
 
         //# Test
 
+        //# Compile
+        model.Randomize();
         var data = new(LayerIndex, double[])[]
         {
             (0, new double[] { 2.6 }),
