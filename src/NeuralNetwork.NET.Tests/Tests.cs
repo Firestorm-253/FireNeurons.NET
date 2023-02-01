@@ -5,9 +5,14 @@ namespace NeuralNetwork.NET.Tests;
 [TestClass]
 public class Tests
 {
+    const int randomSeed = 605013250;
+
     [TestMethod]
     public void Test1()
     {
+        //# Seed Randomizer
+        GlobalRandom = new Random(randomSeed);
+
         //# Initialize
         var model = new NeuralNetwork();
         
