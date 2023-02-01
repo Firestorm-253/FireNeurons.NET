@@ -56,7 +56,7 @@ public class NeuralNetwork
         }
     }
 
-    public double[][] Evaluate((LayerIndex, double[])[] data, LayerIndex[] outputLayers)
+    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, LayerIndex[] outputLayers)
     {
         this.Feed(data);
 
@@ -65,16 +65,20 @@ public class NeuralNetwork
             layer.Calculate();
         }
 
-        var outputs = new double[outputLayers.Length][];
+        var outputs = new (LayerIndex, double[])[outputLayers.Length];
         for (int l = 0; l < outputLayers.Length; l++)
         {
             var outputLayer = this.Get(outputLayers[l]);
+            var outputData = new double[outputLayer.Neurons.Count];
 
             for (int n = 0; n < outputLayer.Neurons.Count; n++)
             {
-                outputs[l][n] = outputLayer.Neurons[n].Value;
+                outputData[n] = outputLayer.Neurons[n].Value;
             }
+
+            outputs[l] = (outputLayers[l], outputData);
         }
+
         return outputs;
     }
 
