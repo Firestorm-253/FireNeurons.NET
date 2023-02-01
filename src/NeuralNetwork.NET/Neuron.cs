@@ -9,6 +9,7 @@ public class Neuron
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
 
+    public double Bias { get; set; }
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; }
@@ -39,7 +40,7 @@ public class Neuron
     {
         this.CalculationNeeded = false;
 
-        double sum = 0;
+        double sum = this.Bias;
         foreach (var connection in this.Connections)
         {
             sum += connection.GetValue();
