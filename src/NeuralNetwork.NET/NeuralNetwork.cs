@@ -56,7 +56,7 @@ public class NeuralNetwork
         }
     }
 
-    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, LayerIndex[] outputLayers)
+    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, params LayerIndex[] outputLayers)
     {
         this.Feed(data);
 
