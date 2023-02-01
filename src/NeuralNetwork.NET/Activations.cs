@@ -24,7 +24,6 @@ public static class Activations
             _ => throw new NotImplementedException(),
         };
     }
-
     public static double Derivate(this double value, Activation activation)
     {
         return activation switch
