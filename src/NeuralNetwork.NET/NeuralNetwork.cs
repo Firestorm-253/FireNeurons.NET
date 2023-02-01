@@ -31,12 +31,16 @@ public class NeuralNetwork
         this.Layers.Add(layer);
     }
 
-    private void Feed((NeuronIndex, double)[] data)
+    private void Feed((LayerIndex, double[])[] data)
     {
         foreach (var ent in data)
         {
-            var neuron = this.Get(ent.Item1);
-            neuron.Feed(ent.Item2);
+            var layer = this.Get(ent.Item1);
+
+            for (int n = 0; n < layer.Neurons.Count; n++)
+            {
+                layer.Neurons[n].Feed(ent.Item2[n]);
+            }
         }
     }
 
