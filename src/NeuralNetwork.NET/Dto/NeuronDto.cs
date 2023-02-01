@@ -8,6 +8,7 @@ public record NeuronDto
     public Activation Activation { get; init; }
     public List<ConnectionDto> Connections { get; init; } = new();
 
+    public NeuronDto() { }
     public NeuronDto(Neuron neuron)
     {
         this.NeuronIndex = neuron.NeuronIndex;

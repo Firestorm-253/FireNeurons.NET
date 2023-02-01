@@ -8,6 +8,7 @@ public record LayerDto
     public Activation Activation { get; init; }
     public List<NeuronDto> Neurons { get; init; } = new();
 
+    public LayerDto() { }
     public LayerDto(Layer layer)
     {
         this.LayerIndex = layer.LayerIndex;

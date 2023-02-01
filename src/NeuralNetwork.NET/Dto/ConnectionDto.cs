@@ -8,6 +8,7 @@ public record ConnectionDto
     public NeuronIndex InputNeuron { get; init; }
     public NeuronIndex OutputNeuron { get; init; }
 
+    public ConnectionDto() { }
     public ConnectionDto(Connection connection)
     {
         this.Weight = connection.Weight;
