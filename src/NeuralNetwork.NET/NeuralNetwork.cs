@@ -35,4 +35,9 @@ public class NeuralNetwork
     {
         return this.Layers.First(x => x.LayerIndex.Equals(layerIndex));
     }
+    public Neuron Get(NeuronIndex neuronIndex)
+    {
+        var layer = this.Get(neuronIndex.LayerIndex);
+        return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
+    }
 }
