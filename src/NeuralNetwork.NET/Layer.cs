@@ -1,4 +1,5 @@
-﻿using NeuralNetwork.NET.Indexes;
+﻿using NeuralNetwork.NET.Dto;
+using NeuralNetwork.NET.Indexes;
 
 namespace NeuralNetwork.NET;
 
@@ -14,6 +15,17 @@ public class Layer
         this.Activation = activation;
         
         this.AddNeurons(neurons);
+    }
+    /// <summary>Deserialization</summary>
+    public Layer(LayerDto layerDto, NeuralNetwork network)
+    {
+        this.LayerIndex = layerDto.LayerIndex;
+        this.Activation = layerDto.Activation;
+
+        foreach (var neuronDto in layerDto.Neurons)
+        {
+            this.Neurons.Add(new Neuron(neuronDto, this, network));
+        }
     }
 
     private void AddNeurons(int amount)
