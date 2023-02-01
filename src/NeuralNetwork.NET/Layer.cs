@@ -22,7 +22,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Activation));
+            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Activation, this));
         }
     }
 

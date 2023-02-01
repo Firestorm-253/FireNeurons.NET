@@ -6,6 +6,7 @@ public class Neuron
 {
     public NeuronIndex NeuronIndex { get; init; }
     public Activation Activation { get; init; }
+    public Layer Layer { get; init; }
 
     public double Blank { get; set; }
 
@@ -19,10 +20,13 @@ public class Neuron
 
     public bool IsWorking => (this.Connections.Count != 0);
 
-    public Neuron(NeuronIndex neuronIndex, Activation activation)
+    public Neuron(NeuronIndex neuronIndex,
+                  Activation activation,
+                  Layer layer)
     {
         this.NeuronIndex = neuronIndex;
         this.Activation = activation;
+        this.Layer = layer;
     }
 
     public double CalculateValue()
