@@ -31,6 +31,14 @@ public class Layer
         throw new NotImplementedException();
     }
 
+    public void Calculate()
+    {
+        foreach (var neuron in this.Neurons)
+        {
+            neuron.CalculateValue();
+        }
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is not Layer layer)
