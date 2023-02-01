@@ -12,8 +12,8 @@ public class NeuralNetwork
     }
 
     public void Add(int neurons,
-                    Activation activation,
                     LayerIndex index,
+                    Activation activation,
                     params LayerIndex[] inputs)
     {
         var layer = new Layer(index, neurons, activation);
@@ -24,6 +24,18 @@ public class NeuralNetwork
             layer.Connect(inputLayer);
         }
         
+        if (this.Layers.Contains(layer))
+        {
+            throw new Exception("ERROR: LayerIndex must be unique!");
+        }
+        this.Layers.Add(layer);
+    }
+    public void Add(int neurons,
+                    LayerIndex index,
+                    Activation activation)
+    {
+        var layer = new Layer(index, neurons, activation);
+
         if (this.Layers.Contains(layer))
         {
             throw new Exception("ERROR: LayerIndex must be unique!");
