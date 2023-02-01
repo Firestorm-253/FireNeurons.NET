@@ -15,7 +15,7 @@ public class Tests
 
         //# Initialize
         var model = new NeuralNetwork();
-        
+
         //# InputLayers
         model.Add(1, 0, Activation.Identity);
         model.Add(2, 1, Activation.Sigmoid);
