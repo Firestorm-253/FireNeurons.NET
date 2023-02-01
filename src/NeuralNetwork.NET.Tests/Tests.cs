@@ -22,8 +22,6 @@ public class Tests
         model.Add(1, 3, Activation.LeakyRelu, 2);
         model.Add(2, 4, Activation.LeakyRelu, 2);
 
-        //# Test
-
         //# Compile
         model.Randomize();
 
