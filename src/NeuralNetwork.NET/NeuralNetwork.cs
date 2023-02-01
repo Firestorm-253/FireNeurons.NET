@@ -2,9 +2,9 @@
 
 namespace NeuralNetwork.NET;
 
-public class NeuralNetwork
+public partial class NeuralNetwork
 {
-    private HashSet<Layer> Layers { get; init; } = null!;
+    public HashSet<Layer> Layers { get; init; } = null!;
 
     public NeuralNetwork()
     {
