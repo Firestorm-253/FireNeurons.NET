@@ -44,6 +44,28 @@ public class NeuralNetwork
         }
     }
 
+    public double[][] Evaluate((LayerIndex, double[])[] data, LayerIndex[] outputLayers)
+    {
+        this.Feed(data);
+
+        foreach (var layer in this.Layers)
+        {
+            layer.Calculate();
+        }
+
+        var outputs = new double[outputLayers.Length][];
+        for (int l = 0; l < outputLayers.Length; l++)
+        {
+            var outputLayer = this.Get(outputLayers[l]);
+
+            for (int n = 0; n < outputLayer.Neurons.Count; n++)
+            {
+                outputs[l][n] = outputLayer.Neurons[n].Value;
+            }
+        }
+        return outputs;
+    }
+
     public Layer Get(LayerIndex layerIndex)
     {
         return this.Layers.First(x => x.LayerIndex.Equals(layerIndex));
