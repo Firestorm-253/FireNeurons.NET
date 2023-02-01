@@ -37,11 +37,27 @@ public class Layer
         }
     }
 
+    public void Randomize(bool withBias)
+    {
+        foreach (var neuron in this.Neurons)
+        {
+            neuron.Randomize(withBias);
+        }
+    }
+
     public void Calculate()
     {
         foreach (var neuron in this.Neurons)
         {
             neuron.CalculateValue();
+        }
+    }
+
+    public void Invalidate()
+    {
+        foreach (var neuron in this.Neurons)
+        {
+            neuron.Invalidate();
         }
     }
 

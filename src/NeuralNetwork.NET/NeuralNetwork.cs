@@ -12,8 +12,8 @@ public class NeuralNetwork
     }
 
     public void Add(int neurons,
-                    Activation activation,
                     LayerIndex index,
+                    Activation activation,
                     params LayerIndex[] inputs)
     {
         var layer = new Layer(index, neurons, activation);
@@ -30,6 +30,26 @@ public class NeuralNetwork
         }
         this.Layers.Add(layer);
     }
+    public void Add(int neurons,
+                    LayerIndex index,
+                    Activation activation)
+    {
+        var layer = new Layer(index, neurons, activation);
+
+        if (this.Layers.Contains(layer))
+        {
+            throw new Exception("ERROR: LayerIndex must be unique!");
+        }
+        this.Layers.Add(layer);
+    }
+
+    public void Randomize(bool withBias = true)
+    {
+        foreach (var layer in this.Layers)
+        {
+            layer.Randomize(withBias);
+        }
+    }
 
     private void Feed((LayerIndex, double[])[] data)
     {
@@ -44,25 +64,34 @@ public class NeuralNetwork
         }
     }
 
-    public double[][] Evaluate((LayerIndex, double[])[] data, LayerIndex[] outputLayers)
+    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, params LayerIndex[] outputLayers)
     {
         this.Feed(data);
+
+        foreach (var layer in this.Layers)
+        {
+            layer.Invalidate();
+        }
 
         foreach (var layer in this.Layers)
         {
             layer.Calculate();
         }
 
-        var outputs = new double[outputLayers.Length][];
+        var outputs = new (LayerIndex, double[])[outputLayers.Length];
         for (int l = 0; l < outputLayers.Length; l++)
         {
             var outputLayer = this.Get(outputLayers[l]);
+            var outputData = new double[outputLayer.Neurons.Count];
 
             for (int n = 0; n < outputLayer.Neurons.Count; n++)
             {
-                outputs[l][n] = outputLayer.Neurons[n].Value;
+                outputData[n] = outputLayer.Neurons[n].Value;
             }
+
+            outputs[l] = (outputLayers[l], outputData);
         }
+
         return outputs;
     }
 
