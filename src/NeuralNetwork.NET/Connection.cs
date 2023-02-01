@@ -1,4 +1,6 @@
-﻿namespace NeuralNetwork.NET;
+﻿using NeuralNetwork.NET.Dto;
+
+namespace NeuralNetwork.NET;
 
 public class Connection
 {
@@ -10,6 +12,13 @@ public class Connection
     public Connection(Neuron inputNeuron, Neuron outputNeuron)
     {
         this.InputNeuron = inputNeuron;
+        this.OutputNeuron = outputNeuron;
+    }
+    /// <summary>Deserialization</summary>
+    public Connection(ConnectionDto connectionDto, Neuron outputNeuron, NeuralNetwork network)
+    {
+        this.Weight = connectionDto.Weight;
+        this.InputNeuron = network.Get(connectionDto.InputNeuron);
         this.OutputNeuron = outputNeuron;
     }
 
