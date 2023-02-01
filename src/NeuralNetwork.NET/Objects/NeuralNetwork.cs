@@ -1,4 +1,5 @@
 ﻿using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Objects;
 
 namespace NeuralNetwork.NET;
 

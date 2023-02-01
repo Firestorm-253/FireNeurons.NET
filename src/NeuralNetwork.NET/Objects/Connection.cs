@@ -1,6 +1,6 @@
 ﻿using NeuralNetwork.NET.Dto;
 
-namespace NeuralNetwork.NET;
+namespace NeuralNetwork.NET.Objects;
 
 public class Connection
 {

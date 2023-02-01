@@ -1,7 +1,7 @@
 ﻿using NeuralNetwork.NET.Dto;
 using NeuralNetwork.NET.Indexes;
 
-namespace NeuralNetwork.NET;
+namespace NeuralNetwork.NET.Objects;
 
 public class Neuron
 {
@@ -21,7 +21,7 @@ public class Neuron
         set => this._value = value;
     }
 
-    public bool IsWorking => (this.Connections.Count != 0);
+    public bool IsWorking => this.Connections.Count != 0;
 
     public Neuron(NeuronIndex neuronIndex,
                   Activation activation,

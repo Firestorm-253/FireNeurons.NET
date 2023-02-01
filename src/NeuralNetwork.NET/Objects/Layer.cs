@@ -1,7 +1,7 @@
 ﻿using NeuralNetwork.NET.Dto;
 using NeuralNetwork.NET.Indexes;
 
-namespace NeuralNetwork.NET;
+namespace NeuralNetwork.NET.Objects;
 
 public class Layer
 {
@@ -13,7 +13,7 @@ public class Layer
     {
         this.LayerIndex = layerIndex;
         this.Activation = activation;
-        
+
         this.AddNeurons(neurons);
     }
     /// <summary>Deserialization</summary>
