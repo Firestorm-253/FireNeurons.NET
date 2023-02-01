@@ -8,6 +8,7 @@ public class Tests
     [TestMethod]
     public void Test1()
     {
+        //# Initialize
         var model = new NeuralNetwork();
         
         //# InputLayers
@@ -21,11 +22,12 @@ public class Tests
         model.Add(1, 3, Activation.LeakyRelu, 2);
         model.Add(2, 4, Activation.LeakyRelu, 2);
 
-
         //# Test
 
         //# Compile
         model.Randomize();
+
+        //# Test
         var data = new(LayerIndex, double[])[]
         {
             (0, new double[] { 2.6 }),
