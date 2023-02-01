@@ -28,7 +28,13 @@ public class Layer
 
     public void Connect(Layer inputLayer)
     {
-        throw new NotImplementedException();
+        foreach (var neuron in this.Neurons)
+        {
+            foreach (var inputNeuron in inputLayer.Neurons)
+            {
+                neuron.Connect(inputNeuron);
+            }
+        }
     }
 
     public void Calculate()

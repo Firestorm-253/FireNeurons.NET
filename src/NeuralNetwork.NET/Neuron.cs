@@ -30,6 +30,11 @@ public class Neuron
         this.Layer = layer;
     }
 
+    public void Connect(Neuron input)
+    {
+        this.Connections.Add(new Connection(input, this));
+    }
+
     public double CalculateValue()
     {
         this.CalculationNeeded = false;
