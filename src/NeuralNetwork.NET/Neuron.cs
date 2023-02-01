@@ -12,7 +12,7 @@ public class Neuron
     public double Bias { get; set; }
     public double Blank { get; set; }
 
-    public bool CalculationNeeded { get; set; }
+    public bool CalculationNeeded { get; set; } = true;
     private double _value;
     public double Value
     {
@@ -75,7 +75,16 @@ public class Neuron
             throw new Exception("ERROR: Can't feed a working neuron!");
         }
 
+        this.CalculationNeeded = false;
+
         this.Set(blank);
+    }
+
+    public void Invalidate()
+    {
+        this.Blank = 0;
+        this.Value = 0;
+        this.CalculationNeeded = true;
     }
 
     public override bool Equals(object? obj)

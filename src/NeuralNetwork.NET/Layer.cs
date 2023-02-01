@@ -53,6 +53,14 @@ public class Layer
         }
     }
 
+    public void Invalidate()
+    {
+        foreach (var neuron in this.Neurons)
+        {
+            neuron.Invalidate();
+        }
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is not Layer layer)
