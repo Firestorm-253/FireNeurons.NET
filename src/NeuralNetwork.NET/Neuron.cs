@@ -7,6 +7,7 @@ public class Neuron
     public NeuronIndex NeuronIndex { get; init; }
     public Activation Activation { get; init; }
     public Layer Layer { get; init; }
+    public List<Connection> Connections { get; init; } = new();
 
     public double Blank { get; set; }
 
@@ -34,8 +35,10 @@ public class Neuron
         this.CalculationNeeded = false;
 
         double sum = 0;
-
-        // ToDo: sum all connections
+        foreach (var connection in this.Connections)
+        {
+            sum += connection.GetValue();
+        }
 
         return this.Set(sum);
     }
