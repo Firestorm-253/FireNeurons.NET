@@ -104,4 +104,42 @@ public partial class NeuralNetwork
         var layer = this.Get(neuronIndex.LayerIndex);
         return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
     }
+
+    public override bool Equals(object? obj)
+    {
+#pragma warning disable IDE0011 // Geschweifte Klammern hinzufügen
+        if (obj is not NeuralNetwork check) return false;
+        if (this.Layers.Count != check.Layers.Count) return false;
+
+        for (int l = 0; l < this.Layers.Count; l++)
+        {
+            var layer = this.Layers.ElementAt(l);
+            var checkLayer = check.Layers.ElementAt(l);
+            if (!layer.Equals(checkLayer)) return false;
+            if (layer.Neurons.Count != checkLayer.Neurons.Count) return false;
+
+            for (int n = 0; n < layer.Neurons.Count; n++)
+            {
+                var neuron = layer.Neurons[n];
+                var checkNeuron = checkLayer.Neurons[n];
+                if (!neuron.Equals(checkNeuron)) return false;
+                if (neuron.Activation != checkNeuron.Activation) return false;
+                if (neuron.Connections.Count != checkNeuron.Connections.Count) return false;
+
+                for (int c = 0; c < neuron.Connections.Count; c++)
+                {
+                    var connection = neuron.Connections[c];
+                    var checkConnection = checkNeuron.Connections[c];
+                    if (!connection.InputNeuron.Equals(checkConnection.InputNeuron)) return false;
+                    if (connection.Weight != checkConnection.Weight) return false;
+                }
+            }
+        }
+
+        return true;
+    }
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
 }
