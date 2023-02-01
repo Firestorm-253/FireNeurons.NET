@@ -31,6 +31,15 @@ public class NeuralNetwork
         this.Layers.Add(layer);
     }
 
+    private void Feed((NeuronIndex, double)[] data)
+    {
+        foreach (var ent in data)
+        {
+            var neuron = this.Get(ent.Item1);
+            neuron.Feed(ent.Item2);
+        }
+    }
+
     public Layer Get(LayerIndex layerIndex)
     {
         return this.Layers.First(x => x.LayerIndex.Equals(layerIndex));
