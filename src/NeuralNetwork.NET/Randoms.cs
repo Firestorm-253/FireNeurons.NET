@@ -9,10 +9,10 @@ public static class Randoms
         return activation switch
         {
             Activation.Identity => UniformRandom(-1, +1),
-            Activation.Sigmoid => XavierRandom(incomingAmout, outgoingAmount),
-            Activation.TanH => XavierRandom(incomingAmout, outgoingAmount),
-            Activation.Relu => HeRandom(incomingAmout),
-            Activation.LeakyRelu => HeRandom(incomingAmout),
+            Activation.Sigmoid => XavierRandom(incomingAmout + 1, outgoingAmount + 1),
+            Activation.TanH => XavierRandom(incomingAmout + 1, outgoingAmount + 1),
+            Activation.Relu => HeRandom(incomingAmout + 1),
+            Activation.LeakyRelu => HeRandom(incomingAmout + 1),
             _ => throw new ArgumentException("ERROR: Invalid activation!"),
         };
     }
