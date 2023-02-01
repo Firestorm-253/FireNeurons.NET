@@ -4,6 +4,21 @@ public static class Randoms
 {
     /// <param name="incomingAmount">the amount of Neurons in the layer before the connection</param>
     /// <param name="outgoigAmount">the amount of Neurons in the layer after the connection</param>
+    public static double GetRandom(Activation activation, int incomingAmout = 1, int outgoingAmount = 1)
+    {
+        return activation switch
+        {
+            Activation.Identity => UniformRandom(-1, +1),
+            Activation.Sigmoid => XavierRandom(incomingAmout, outgoingAmount),
+            Activation.TanH => XavierRandom(incomingAmout, outgoingAmount),
+            Activation.Relu => HeRandom(incomingAmout),
+            Activation.LeakyRelu => HeRandom(incomingAmout),
+            _ => throw new ArgumentException("ERROR: Invalid activation!"),
+        };
+    }
+
+    /// <param name="incomingAmount">the amount of Neurons in the layer before the connection</param>
+    /// <param name="outgoigAmount">the amount of Neurons in the layer after the connection</param>
     public static double XavierRandom(int incomingAmount, int outgoigAmount)
     {
         double xavierFactor = Math.Sqrt(6) / (incomingAmount + outgoigAmount);
