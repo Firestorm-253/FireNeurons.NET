@@ -43,6 +43,14 @@ public class NeuralNetwork
         this.Layers.Add(layer);
     }
 
+    public void Randomize(bool withBias = true)
+    {
+        foreach (var layer in this.Layers)
+        {
+            layer.Randomize(withBias);
+        }
+    }
+
     private void Feed((LayerIndex, double[])[] data)
     {
         foreach (var ent in data)

@@ -9,6 +9,7 @@ public class Neuron
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
 
+    public double Bias { get; set; }
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; }
@@ -35,11 +36,24 @@ public class Neuron
         this.Connections.Add(new Connection(input, this));
     }
 
+    public void Randomize(bool withBias)
+    {
+        foreach (var connection in this.Connections)
+        {
+            connection.Randomize(this.Activation);
+        }
+
+        if (withBias)
+        {
+            this.Bias = GetRandom(this.Activation, this.Connections.Count, this.Layer.Neurons.Count);
+        }
+    }
+
     public double CalculateValue()
     {
         this.CalculationNeeded = false;
 
-        double sum = 0;
+        double sum = this.Bias;
         foreach (var connection in this.Connections)
         {
             sum += connection.GetValue();

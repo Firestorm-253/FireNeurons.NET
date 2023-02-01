@@ -15,15 +15,7 @@ public class Connection
 
     public void Randomize(Activation activation)
     {
-        this.Weight = activation switch
-        {
-            Activation.Identity => UniformRandom(-1, +1),
-            Activation.Sigmoid => XavierRandom(this.InputNeuron.Layer.Neurons.Count, this.OutputNeuron.Layer.Neurons.Count),
-            Activation.TanH => XavierRandom(this.InputNeuron.Layer.Neurons.Count, this.OutputNeuron.Layer.Neurons.Count),
-            Activation.Relu => HeRandom(this.InputNeuron.Layer.Neurons.Count),
-            Activation.LeakyRelu => HeRandom(this.InputNeuron.Layer.Neurons.Count),
-            _ => throw new ArgumentException("ERROR: Invalid activation!"),
-        };
+        this.Weight = GetRandom(activation, this.OutputNeuron.Connections.Count, this.OutputNeuron.Layer.Neurons.Count);
     }
 
     public double GetValue()
