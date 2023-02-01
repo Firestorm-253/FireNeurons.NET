@@ -70,6 +70,11 @@ public class NeuralNetwork
 
         foreach (var layer in this.Layers)
         {
+            layer.Invalidate();
+        }
+
+        foreach (var layer in this.Layers)
+        {
             layer.Calculate();
         }
 
