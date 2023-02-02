@@ -1,5 +1,4 @@
-﻿using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Objects;
+﻿using FireNeurons.NET.Objects;
 using FireNeurons.NET.Optimizers;
 
 namespace FireNeurons.NET.Tests;
@@ -14,13 +13,13 @@ public class OptimizerTests
     {
         const double learningRate = 0.0001;
 
-        var sgd_percentage = this.XOR_LossDecreasePercentage(new SGD(learningRate));
-        var adam_percentage = this.XOR_LossDecreasePercentage(new Adam(learningRate));
+        var sgd_percentage = XOR_LossDecreasePercentage(new SGD(learningRate));
+        var adam_percentage = XOR_LossDecreasePercentage(new Adam(learningRate));
 
         Assert.IsTrue(adam_percentage > sgd_percentage);
     }
 
-    private double XOR_LossDecreasePercentage(IOptimizer optimizer)
+    private static double XOR_LossDecreasePercentage(IOptimizer optimizer)
     {
         //# Seed Randomizer
         GlobalRandom = new Random(randomSeed);
