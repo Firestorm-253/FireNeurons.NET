@@ -9,4 +9,10 @@ public static class Globals
     {
         return (oldValue * discountFactor) + ((1 - discountFactor) * newValue);
     }
+
+    /// <param name="timeStep">starts at 1 !!!</param>
+    public static double FixBias(this double value, double discountFactor, int timeStep)
+    {
+        return value / (1 - Math.Pow(discountFactor, timeStep));
+    }
 }
