@@ -4,10 +4,26 @@ namespace FireNeurons.NET.Objects;
 
 public record Data
 {
-    public (LayerIndex, double[])[] Layers { get; init; }
+    public Dictionary<LayerIndex, double[]> DataLayers { get; init; } = new();
 
-    public Data(params (LayerIndex, double[])[] layers)
+    public Data() { }
+    public Data(params KeyValuePair<LayerIndex, double[]>[] dataLayers)
     {
-        this.Layers = layers;
+        this.DataLayers = new Dictionary<LayerIndex, double[]>(dataLayers);
     }
+
+    public void Add(LayerIndex layerIndex, double[] values)
+    {
+        if (this.DataLayers.ContainsKey(layerIndex))
+        {
+            throw new ArgumentException("ERROR: DataLayer already exists!");
+        }
+
+        this.DataLayers.Add(layerIndex, values);
+    }
+
+    public double[] this[LayerIndex layerIndex] => this.DataLayers[layerIndex];
+
+    public static implicit operator Dictionary<LayerIndex, double[]>(Data data)
+        => data.DataLayers;
 }

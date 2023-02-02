@@ -39,14 +39,13 @@ public class OptimizerTests
         double target = 0;
         var outputNeuron = model.Layers.Last().Neurons.First();
 
-        var data = new Data(
-            (0, new double[] { 2.6 })
-        );
+        var data = new Data();
+        data.Add(0, new double[] { 2.6 });
+
         var resultsBefore = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
 
-        var targets = new Data(
-            (4, new double[] { target })
-        );
+        var targets = new Data();
+        targets.Add(4, new double[] { target });
 
         model.Train(new List<(Data, Data)>() { (data, targets) }, 10);
 
@@ -82,6 +81,6 @@ public class OptimizerTests
         //}
 
         var resultsEnd = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
-        var diffEnd = resultsEnd.Layers[0].Item2[0] - resultsBefore.Layers[0].Item2[0];
+        var diffEnd = resultsEnd[0][0] - resultsBefore[0][0];
     }
 }
