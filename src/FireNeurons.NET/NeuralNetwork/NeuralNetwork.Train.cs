@@ -57,11 +57,11 @@ public partial class NeuralNetwork
 
     private void TrainHiddenLayers(LayerIndex[] targetIndexes)
     {
-        foreach (var layer in this.Layers.OrderByDescending(x => x.LayerIndex))
+        foreach (var layer in this.Layers.OrderByDescending(x => x.LayerIndex.Index))
         {
             if (targetIndexes.Contains(layer.LayerIndex))
             {
-                return;
+                continue;
             }
 
             this.TrainHiddenLayer(layer);
