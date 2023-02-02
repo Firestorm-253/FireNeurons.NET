@@ -1,4 +1,6 @@
-﻿namespace NeuralNetwork.NET.Indexes;
+﻿using NeuralNetwork.NET.Objects;
+
+namespace NeuralNetwork.NET.Indexes;
 
 public class LayerEqualityComparer : EqualityComparer<Layer>
 {

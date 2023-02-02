@@ -1,14 +1,18 @@
 ﻿using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Objects;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET;
 
 public partial class NeuralNetwork
 {
-    public HashSet<Layer> Layers { get; init; } = null!;
+    public HashSet<Layer> Layers { get; init; }
+    public IOptimizer Optimizer { get; init; }
 
-    public NeuralNetwork()
+    public NeuralNetwork(IOptimizer optimizer)
     {
         this.Layers = new HashSet<Layer>(new LayerEqualityComparer());
+        this.Optimizer = optimizer;
     }
 
     public void Add(int neurons,
@@ -16,7 +20,7 @@ public partial class NeuralNetwork
                     Activation activation,
                     params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, activation);
+        var layer = new Layer(index, neurons, activation, this.Optimizer);
 
         foreach (var inputLayerIndex in inputs)
         {
@@ -34,7 +38,7 @@ public partial class NeuralNetwork
                     LayerIndex index,
                     Activation activation)
     {
-        var layer = new Layer(index, neurons, activation);
+        var layer = new Layer(index, neurons, activation, this.Optimizer);
 
         if (this.Layers.Contains(layer))
         {
@@ -51,9 +55,9 @@ public partial class NeuralNetwork
         }
     }
 
-    private void Feed((LayerIndex, double[])[] data)
+    private void Feed(Data data)
     {
-        foreach (var ent in data)
+        foreach (var ent in data.Layers)
         {
             var layer = this.Get(ent.Item1);
 
@@ -64,7 +68,7 @@ public partial class NeuralNetwork
         }
     }
 
-    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, params LayerIndex[] outputLayers)
+    public Data Evaluate(Data data, params LayerIndex[] outputLayers)
     {
         this.Feed(data);
 
@@ -92,7 +96,62 @@ public partial class NeuralNetwork
             outputs[l] = (outputLayers[l], outputData);
         }
 
-        return outputs;
+        return new Data(outputs);
+    }
+
+    public void Train(List<(Data, Data)> dataTargetSet, int iterations)
+    {
+        for (int iteration = 0; iteration < iterations; iteration++)
+        {
+            //dataSet = dataSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
+            // Find a way to shuffle dataSet together with targetSet!
+
+            for (int d = 0; d < dataTargetSet.Count; d++)
+            {
+                var data = dataTargetSet[d].Item1;
+                var target = dataTargetSet[d].Item2;
+
+                var outputLayersIndexes = target.Layers.Select(x => x.Item1).ToArray();
+
+                this.Evaluate(data, outputLayersIndexes);
+
+                for (int ol = 0; ol < target.Layers.Length; ol++)
+                {
+                    var outputLayer = this.Get(outputLayersIndexes[ol]);
+                    var layerTarget = target.Layers[ol];
+
+                    for (int on = 0; on < outputLayer.Neurons.Count; on++)
+                    {
+                        var outputNeuron = outputLayer.Neurons[on];
+
+                        this.Optimizer.CalculateGradient(outputNeuron, (layerTarget.Item2[on] - outputNeuron.Value));
+                        this.Optimizer.CalculateDelta(outputNeuron.OptimizerData);
+                    }
+                }
+
+                for (int l = this.Layers.Count - 1; l >= 0; l--)
+                {
+                    if (outputLayersIndexes.Contains(l))
+                    {
+                        continue;
+                    }
+
+                    foreach (var neuron in this.Layers.ElementAt(l).Neurons)
+                    {
+                        this.Optimizer.CalculateGradient(neuron);
+
+                        this.Optimizer.CalculateDelta(neuron.OptimizerData);
+                        neuron.Bias += neuron.OptimizerData.Delta;
+
+                        foreach (var outgoingConnection in neuron.OutgoingConnections)
+                        {
+                            this.Optimizer.CalculateDelta(outgoingConnection.OptimizerData);
+                            outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public Layer Get(LayerIndex layerIndex)
