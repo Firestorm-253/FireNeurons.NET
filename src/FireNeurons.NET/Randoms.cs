@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork.NET;
+﻿namespace FireNeurons.NET;
 
 public static class Randoms
 {
