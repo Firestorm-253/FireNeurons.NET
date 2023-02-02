@@ -31,6 +31,8 @@ public class Adam : SGD
 
         var rawDelta = (momentum_fixed / (Math.Sqrt(momentumSquared_fixed) + Math.Pow(10, -6)));
         adamData.Delta = this.LearningRate * rawDelta;
+
+        adamData.TimeStep++;
     }
 }
 
