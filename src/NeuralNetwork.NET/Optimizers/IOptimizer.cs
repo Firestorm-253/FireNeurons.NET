@@ -11,6 +11,9 @@ public abstract class IOptimizer
     {
         this.LearningRate = learningRate;
     }
+
+    public abstract void CalculateDelta(IOptimizerData optimizerData);
+
     public void CalculateGradient(Neuron neuron, double loss)
     {
         if (neuron.OutgoingConnections.Count != 0)

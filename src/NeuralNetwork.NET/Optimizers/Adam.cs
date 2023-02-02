@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace NeuralNetwork.NET.Optimizers;
 
-public class Adam : IOptimizer
+public class Adam : SGD
 {
     public override IOptimizerData DataInstance => new AdamData();
 
@@ -16,7 +16,7 @@ public class Adam : IOptimizer
         this.Beta_2 = beta_2;
     }
 
-    public void Calculate(IOptimizerData optimizerData)
+    public override void CalculateDelta(IOptimizerData optimizerData)
     {
         if (optimizerData is not AdamData adamData)
         {
