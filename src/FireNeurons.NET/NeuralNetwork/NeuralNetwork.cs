@@ -70,12 +70,12 @@ public partial class NeuralNetwork
 
     public Data Evaluate(Data data, params LayerIndex[] outputLayers)
     {
-        this.Feed(data);
-
         foreach (var layer in this.Layers)
         {
             layer.Invalidate();
         }
+
+        this.Feed(data);
 
         foreach (var layer in this.Layers)
         {

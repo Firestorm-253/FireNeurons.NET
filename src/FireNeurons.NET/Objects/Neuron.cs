@@ -23,7 +23,7 @@ public class Neuron
     private double _value;
     public double Value
     {
-        get => this.CalculationNeeded ? this.CalculateValue() : this._value;
+        get => this.CalculationNeeded && this.IsWorking ? this.CalculateValue() : this._value;
         set => this._value = value;
     }
 
@@ -77,6 +77,11 @@ public class Neuron
 
     public double CalculateValue()
     {
+        if (!this.IsWorking)
+        {
+            return this.Value;
+        }
+
         this.CalculationNeeded = false;
 
         double sum = this.Bias;
