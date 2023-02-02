@@ -10,18 +10,26 @@ public class OptimizerTests
     const int randomSeed = 605013250;
 
     [TestMethod]
-    public void SGDTest()
+    public void AdamVsSGD_Test()
+    {
+        const double learningRate = 0.0001;
+
+        var sgd_percentage = this.XOR_LossDecreasePercentage(new SGD(learningRate));
+        var adam_percentage = this.XOR_LossDecreasePercentage(new Adam(learningRate));
+
+        Assert.IsTrue(adam_percentage > sgd_percentage);
+    }
+
+    private double XOR_LossDecreasePercentage(IOptimizer optimizer)
     {
         //# Seed Randomizer
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        const double learningRate = 0.001;
-        var optimizer = new Adam(learningRate);
         var model = new NeuralNetwork(optimizer);
 
         //# InputLayers
-        model.Add(1, 0, Activation.Sigmoid);
+        model.Add(2, 0, Activation.Sigmoid);
 
         //# HiddenLayers
         model.Add(100, 1, Activation.LeakyRelu, 0);
@@ -36,51 +44,57 @@ public class OptimizerTests
 
 
         //# Test
-        double target = 0;
         var outputNeuron = model.Layers.Last().Neurons.First();
 
-        var data = new Data();
-        data.Add(0, new double[] { 2.6 });
+        var dataTargetSet = new List<(Data, Data)>()
+        {
+            (new Data().Add(0, new double[] { 0, 0 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 0 })),
+            (new Data().Add(0, new double[] { 1, 1 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 0 })),
+            (new Data().Add(0, new double[] { 0, 1 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 1 })),
+            (new Data().Add(0, new double[] { 1, 0 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 1 })),
+        };
 
-        var resultsBefore = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
+        var resultsBefore = new Data[]
+        {
+            model.Evaluate(dataTargetSet[0].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[1].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[2].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[3].Item1, outputNeuron.NeuronIndex.LayerIndex),
+        };
 
-        var targets = new Data();
-        targets.Add(4, new double[] { target });
+        model.Train(dataTargetSet, iterations: 200);
 
-        model.Train(new List<(Data, Data)>() { (data, targets) }, 10);
+        var resultsAfter = new Data[]
+        {
+            model.Evaluate(dataTargetSet[0].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[1].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[2].Item1, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(dataTargetSet[3].Item1, outputNeuron.NeuronIndex.LayerIndex),
+        };
 
-        //for (int iterations = 0; iterations < 10; iterations++)
-        //{
-        //    model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
+        double mseBefore = MSE(resultsBefore, dataTargetSet.Select(x => x.Item2).ToArray());
+        double mseAfter = MSE(resultsAfter, dataTargetSet.Select(x => x.Item2).ToArray());
+        return 1 - (mseAfter / mseBefore);
+    }
 
-        //    optimizer.CalculateGradient(outputNeuron, (target - outputNeuron.Value));
-        //    optimizer.CalculateDelta(outputNeuron.OptimizerData);
 
-        //    for (int l = model.Layers.Count - 2; l >= 0; l--)
-        //    {
-        //        foreach (var neuron in model.Layers.ElementAt(l).Neurons)
-        //        {
-        //            optimizer.CalculateGradient(neuron);
-        //            Assert.AreNotEqual(0, neuron.OptimizerData.Gradient);
 
-        //            optimizer.CalculateDelta(neuron.OptimizerData);
-        //            neuron.Bias += neuron.OptimizerData.Delta;
-        //            Assert.AreNotEqual(0, neuron.OptimizerData.Delta);
+    private static double MSE(Data[] results, Data[] targets)
+    {
+        double loss = 0;
+        for (int d = 0; d < results.Length; d++)
+        {
+            for (int l = 0; l < results[d].DataLayers.Count; l++)
+            {
+                var values = results[d].DataLayers.ElementAt(l).Value;
+                var targetValues = targets[d].DataLayers.ElementAt(l).Value;
 
-        //            foreach (var outgoingConnection in neuron.OutgoingConnections)
-        //            {
-        //                optimizer.CalculateDelta(outgoingConnection.OptimizerData);
-        //                outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
-        //                Assert.AreNotEqual(0, outgoingConnection.OptimizerData.Delta);
-        //            }
-        //        }
-        //    }
-
-        //    //var results = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
-        //    //var diff = results[0].Item2[0] - resultsBefore[0].Item2[0];
-        //}
-
-        var resultsEnd = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
-        var diffEnd = resultsEnd[0][0] - resultsBefore[0][0];
+                for (int n = 0; n < values.Length; n++)
+                {
+                    loss += Math.Pow(targetValues[n] - values[n], 2);
+                }
+            }
+        }
+        return loss;
     }
 }
