@@ -59,11 +59,11 @@ public partial class NeuralNetwork
     {
         foreach (var ent in data.DataLayers)
         {
-            var layer = this.Get(ent.Item1);
+            var layer = this.Get(ent.Key);
 
             for (int n = 0; n < layer.Neurons.Count; n++)
             {
-                layer.Neurons[n].Feed(ent.Item2[n]);
+                layer.Neurons[n].Feed(ent.Value[n]);
             }
         }
     }
@@ -82,7 +82,7 @@ public partial class NeuralNetwork
             layer.Calculate();
         }
 
-        var outputs = new (LayerIndex, double[])[outputLayers.Length];
+        var outputs = new KeyValuePair<LayerIndex, double[]>[outputLayers.Length];
         for (int l = 0; l < outputLayers.Length; l++)
         {
             var outputLayer = this.Get(outputLayers[l]);
@@ -93,7 +93,7 @@ public partial class NeuralNetwork
                 outputData[n] = outputLayer.Neurons[n].Value;
             }
 
-            outputs[l] = (outputLayers[l], outputData);
+            outputs[l] = new(outputLayers[l], outputData);
         }
 
         return new Data(outputs);
