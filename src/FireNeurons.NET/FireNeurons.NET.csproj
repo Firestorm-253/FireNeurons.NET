@@ -6,14 +6,16 @@
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest</AnalysisLevel>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <Authors>Laurin Zehnder</Authors>
+    <Authors>Firestorm253</Authors>
     <Title>$(AssemblyName)</Title>
-    <Copyright>$(Authors)</Copyright>
-	<Version>1.0.0.1</Version>
+    <Copyright>Laurin Zehnder</Copyright>
+	<Version>1.0.0.2</Version>
     <Description>$(AssemblyName) is a userfriendly NeuralNetwork library.</Description>
     <PackageProjectUrl>https://github.com/Firestorm-253/FireNeurons.NET</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>firestorm.jpg</PackageIcon>
+    <Company>Laurin Zehnder</Company>
+    <PackageOutputPath>bin\Debug\packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
