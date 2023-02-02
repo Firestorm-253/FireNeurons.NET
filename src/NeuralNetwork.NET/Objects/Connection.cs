@@ -15,6 +15,7 @@ public class Connection
     {
         this.InputNeuron = inputNeuron;
         this.OutputNeuron = outputNeuron;
+        this.InputNeuron.OutgoingConnections.Add(this);
     }
     /// <summary>Deserialization</summary>
     public Connection(ConnectionDto connectionDto, Neuron outputNeuron, NeuralNetwork network)
@@ -22,6 +23,7 @@ public class Connection
         this.Weight = connectionDto.Weight;
         this.InputNeuron = network.Get(connectionDto.InputNeuron);
         this.OutputNeuron = outputNeuron;
+        this.InputNeuron.OutgoingConnections.Add(this);
     }
 
     public void Randomize(Activation activation)

@@ -10,6 +10,7 @@ public class Neuron
     public Activation Activation { get; init; }
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
+    public List<Connection> OutgoingConnections { get; init; } = new();
 
     public IOptimizerData OptimizerData { get; set; } = null!; // for Bias
     public double Bias { get; set; }
