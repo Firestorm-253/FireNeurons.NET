@@ -1,5 +1,6 @@
 ﻿using NeuralNetwork.NET.Dto;
 using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET.Objects;
 
@@ -10,6 +11,7 @@ public class Neuron
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
 
+    public IOptimizerData OptimizerData { get; set; } = null!; // for Bias
     public double Bias { get; set; }
     public double Blank { get; set; }
 

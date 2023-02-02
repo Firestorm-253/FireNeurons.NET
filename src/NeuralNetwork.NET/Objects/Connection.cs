@@ -1,4 +1,5 @@
 ﻿using NeuralNetwork.NET.Dto;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET.Objects;
 
@@ -8,6 +9,7 @@ public class Connection
     public Neuron OutputNeuron { get; init; }
 
     public double Weight { get; set; }
+    public IOptimizerData OptimizerData { get; set; } = null!; // for Weight
 
     public Connection(Neuron inputNeuron, Neuron outputNeuron)
     {
