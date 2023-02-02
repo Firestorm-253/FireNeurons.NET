@@ -5,9 +5,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AnalysisLevel>latest</AnalysisLevel>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <Authors>Laurin Zehnder</Authors>
+    <Title>$(AssemblyName)</Title>
+    <Copyright>$(Authors)</Copyright>
+	<Version>1.0.0.1</Version>
+    <Description>$(AssemblyName) is a userfriendly NeuralNetwork library.</Description>
+    <PackageProjectUrl>https://github.com/Firestorm-253/FireNeurons.NET</PackageProjectUrl>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIcon>firestorm.jpg</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\..\..\..\Pictures\firestorm.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
