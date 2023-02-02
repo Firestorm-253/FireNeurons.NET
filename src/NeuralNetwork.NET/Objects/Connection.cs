@@ -15,8 +15,8 @@ public class Connection
 
     public Connection(Neuron inputNeuron, Neuron outputNeuron, IOptimizer optimizer)
     {
-        this.InputNeuron = inputNeuron;
         this.OutputNeuron = outputNeuron;
+        this.InputNeuron = inputNeuron;
         this.Optimizer = optimizer;
 
         this.OptimizerData = this.Optimizer.DataInstance;
@@ -26,8 +26,8 @@ public class Connection
     public Connection(ConnectionDto connectionDto, Neuron outputNeuron, NeuralNetwork network)
     {
         this.Weight = connectionDto.Weight;
-        this.InputNeuron = network.Get(connectionDto.InputNeuron);
         this.OutputNeuron = outputNeuron;
+        this.InputNeuron = network.Get(connectionDto.InputNeuron);
         this.Optimizer = network.Optimizer;
 
         this.OptimizerData = this.Optimizer.DataInstance;

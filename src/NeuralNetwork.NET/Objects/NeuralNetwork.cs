@@ -6,7 +6,7 @@ namespace NeuralNetwork.NET;
 
 public partial class NeuralNetwork
 {
-    public HashSet<Layer> Layers { get; init; } = null!;
+    public HashSet<Layer> Layers { get; init; }
     public IOptimizer Optimizer { get; init; }
 
     public NeuralNetwork(IOptimizer optimizer)
