@@ -15,7 +15,7 @@ public partial class NeuralNetwork
         }
     }
 
-    private void Train(List<(Data, Data)> dataTargetSet)
+    public void Train(List<(Data, Data)> dataTargetSet)
     {
         foreach (var dataTarget in dataTargetSet)
         {
@@ -23,7 +23,7 @@ public partial class NeuralNetwork
         }
     }
 
-    private void Train(Data data, Data target)
+    public void Train(Data data, Data target)
     {
         var targetIndexes = target.DataLayers.Keys.ToArray();
 
