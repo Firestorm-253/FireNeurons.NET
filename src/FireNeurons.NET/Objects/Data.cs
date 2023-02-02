@@ -12,7 +12,7 @@ public record Data
         this.DataLayers = new Dictionary<LayerIndex, double[]>(dataLayers);
     }
 
-    public void Add(LayerIndex layerIndex, double[] values)
+    public Data Add(LayerIndex layerIndex, double[] values)
     {
         if (this.DataLayers.ContainsKey(layerIndex))
         {
@@ -20,6 +20,7 @@ public record Data
         }
 
         this.DataLayers.Add(layerIndex, values);
+        return this;
     }
 
     public double[] this[LayerIndex layerIndex] => this.DataLayers[layerIndex];
