@@ -13,6 +13,7 @@ public class Neuron
 
     public IOptimizerData OptimizerData { get; set; } = null!; // for Bias
     public double Bias { get; set; }
+
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; } = true;
