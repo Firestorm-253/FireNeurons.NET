@@ -5,6 +5,8 @@ namespace NeuralNetwork.NET.Optimizers;
 
 public class Adam : IOptimizer
 {
+    public override IOptimizerData DataInstance => new AdamData();
+
     public double Beta_1 { get; init; }
     public double Beta_2 { get; init; }
 

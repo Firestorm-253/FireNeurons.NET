@@ -1,15 +1,18 @@
 ﻿using NeuralNetwork.NET.Indexes;
 using NeuralNetwork.NET.Objects;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET;
 
 public partial class NeuralNetwork
 {
     public HashSet<Layer> Layers { get; init; } = null!;
+    public IOptimizer Optimizer { get; init; }
 
-    public NeuralNetwork()
+    public NeuralNetwork(IOptimizer optimizer)
     {
         this.Layers = new HashSet<Layer>(new LayerEqualityComparer());
+        this.Optimizer = optimizer;
     }
 
     public void Add(int neurons,
@@ -17,7 +20,7 @@ public partial class NeuralNetwork
                     Activation activation,
                     params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, activation);
+        var layer = new Layer(index, neurons, activation, this.Optimizer);
 
         foreach (var inputLayerIndex in inputs)
         {
@@ -35,7 +38,7 @@ public partial class NeuralNetwork
                     LayerIndex index,
                     Activation activation)
     {
-        var layer = new Layer(index, neurons, activation);
+        var layer = new Layer(index, neurons, activation, this.Optimizer);
 
         if (this.Layers.Contains(layer))
         {
