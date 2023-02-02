@@ -55,9 +55,9 @@ public partial class NeuralNetwork
         }
     }
 
-    private void Feed((LayerIndex, double[])[] data)
+    private void Feed(Data data)
     {
-        foreach (var ent in data)
+        foreach (var ent in data.Layers)
         {
             var layer = this.Get(ent.Item1);
 
@@ -68,7 +68,7 @@ public partial class NeuralNetwork
         }
     }
 
-    public (LayerIndex, double[])[] Evaluate((LayerIndex, double[])[] data, params LayerIndex[] outputLayers)
+    public Data Evaluate(Data data, params LayerIndex[] outputLayers)
     {
         this.Feed(data);
 
@@ -96,7 +96,8 @@ public partial class NeuralNetwork
             outputs[l] = (outputLayers[l], outputData);
         }
 
-        return outputs;
+        return new Data(outputs);
+    }
     }
 
     public Layer Get(LayerIndex layerIndex)

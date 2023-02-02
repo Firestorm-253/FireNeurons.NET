@@ -1,4 +1,5 @@
 using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Objects;
 using System.Diagnostics;
 
 namespace NeuralNetwork.NET.Tests;
@@ -33,11 +34,11 @@ public class Tests
         model.Randomize();
 
         //# Test
-        var data = new(LayerIndex, double[])[]
+        var data = new Data(new(LayerIndex, double[])[]
         {
             (0, new double[] { 2.6 }),
             (1, new double[] { 21, -30 }),
-        };
+        });
 
         var results = model.Evaluate(data, 3, 4);
     }

@@ -75,6 +75,38 @@ public class OptimizerTests
             //var results = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
             //var diff = results[0].Item2[0] - resultsBefore[0].Item2[0];
         }
+        model.Train(new List<(Data, Data)>() { (data, targets) }, 10);
+
+        //for (int iterations = 0; iterations < 10; iterations++)
+        //{
+        //    model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
+
+        //    optimizer.CalculateGradient(outputNeuron, (target - outputNeuron.Value));
+        //    optimizer.CalculateDelta(outputNeuron.OptimizerData);
+
+        //    for (int l = model.Layers.Count - 2; l >= 0; l--)
+        //    {
+        //        foreach (var neuron in model.Layers.ElementAt(l).Neurons)
+        //        {
+        //            optimizer.CalculateGradient(neuron);
+        //            Assert.AreNotEqual(0, neuron.OptimizerData.Gradient);
+
+        //            optimizer.CalculateDelta(neuron.OptimizerData);
+        //            neuron.Bias += neuron.OptimizerData.Delta;
+        //            Assert.AreNotEqual(0, neuron.OptimizerData.Delta);
+
+        //            foreach (var outgoingConnection in neuron.OutgoingConnections)
+        //            {
+        //                optimizer.CalculateDelta(outgoingConnection.OptimizerData);
+        //                outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
+        //                Assert.AreNotEqual(0, outgoingConnection.OptimizerData.Delta);
+        //            }
+        //        }
+        //    }
+
+        //    //var results = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
+        //    //var diff = results[0].Item2[0] - resultsBefore[0].Item2[0];
+        //}
 
         var resultsEnd = model.Evaluate(data, outputNeuron.NeuronIndex.LayerIndex);
         var diffEnd = resultsEnd[0].Item2[0] - resultsBefore[0].Item2[0];
