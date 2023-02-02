@@ -10,7 +10,7 @@ public abstract class IOptimizer
     }
 }
 
-public abstract record IOptimizerData
+public record IOptimizerData
 {
     public double Delta { get; set; }
     public double Gradient { get; set; }
