@@ -1,4 +1,5 @@
 using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Objects;
 using System.Diagnostics;
 
 namespace NeuralNetwork.NET.Tests;
@@ -15,7 +16,8 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var model = new NeuralNetwork();
+        var optimizer = new Optimizers.SGD(0.02);
+        var model = new NeuralNetwork(optimizer);
 
         //# InputLayers
         model.Add(1, 0, Activation.Identity);
@@ -32,11 +34,11 @@ public class Tests
         model.Randomize();
 
         //# Test
-        var data = new(LayerIndex, double[])[]
+        var data = new Data(new(LayerIndex, double[])[]
         {
             (0, new double[] { 2.6 }),
             (1, new double[] { 21, -30 }),
-        };
+        });
 
         var results = model.Evaluate(data, 3, 4);
     }
@@ -48,7 +50,8 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var model = new NeuralNetwork();
+        var optimizer = new Optimizers.SGD(0.02);
+        var model = new NeuralNetwork(optimizer);
 
         //# InputLayers
         model.Add(6, 0, Activation.Sigmoid);
@@ -69,8 +72,8 @@ public class Tests
         model.Save(name, SaveType.Binary);
         model.Save(name, SaveType.Json);
 
-        var binaryLoaded = new NeuralNetwork($"{name}.nn");
-        var jsonLoaded = new NeuralNetwork($"{name}.json");
+        var binaryLoaded = new NeuralNetwork($"{name}.nn", optimizer);
+        var jsonLoaded = new NeuralNetwork($"{name}.json", optimizer);
 
         Assert.AreEqual(binaryLoaded, jsonLoaded);
         Assert.AreEqual(model, binaryLoaded);

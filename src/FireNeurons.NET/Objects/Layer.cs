@@ -64,6 +64,11 @@ public class Layer
     {
         foreach (var neuron in this.Neurons)
         {
+            if (!neuron.IsWorking || !neuron.CalculationNeeded)
+            {
+                continue;
+            }
+
             neuron.CalculateValue();
         }
     }

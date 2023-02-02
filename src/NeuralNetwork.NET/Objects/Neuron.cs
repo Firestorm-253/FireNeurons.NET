@@ -1,5 +1,6 @@
 ﻿using NeuralNetwork.NET.Dto;
 using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET.Objects;
 
@@ -9,8 +10,13 @@ public class Neuron
     public Activation Activation { get; init; }
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
+    public List<Connection> OutgoingConnections { get; init; } = new();
+
+    public IOptimizer Optimizer { get; init; }
 
     public double Bias { get; set; }
+
+    public IOptimizerData OptimizerData { get; set; } = null!; // for Neuron & Bias
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; } = true;
@@ -25,11 +31,15 @@ public class Neuron
 
     public Neuron(NeuronIndex neuronIndex,
                   Activation activation,
-                  Layer layer)
+                  Layer layer,
+                  IOptimizer optimizer)
     {
         this.NeuronIndex = neuronIndex;
         this.Activation = activation;
         this.Layer = layer;
+        this.Optimizer = optimizer;
+
+        this.OptimizerData = this.Optimizer.DataInstance;
     }
     /// <summary>Deserialization</summary>
     public Neuron(NeuronDto neuronDto, Layer layer, NeuralNetwork network)
@@ -37,16 +47,19 @@ public class Neuron
         this.NeuronIndex = neuronDto.NeuronIndex;
         this.Activation = neuronDto.Activation;
         this.Layer = layer;
+        this.Optimizer = network.Optimizer;
 
         foreach (var connectionDto in neuronDto.Connections)
         {
             this.Connections.Add(new Connection(connectionDto, this, network));
         }
+
+        this.OptimizerData = this.Optimizer.DataInstance;
     }
 
     public void Connect(Neuron input)
     {
-        this.Connections.Add(new Connection(input, this));
+        this.Connections.Add(new Connection(input, this, this.Optimizer));
     }
 
     public void Randomize(bool withBias)

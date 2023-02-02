@@ -1,5 +1,6 @@
 ﻿using NeuralNetwork.NET.Dto;
 using NeuralNetwork.NET.Indexes;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET.Objects;
 
@@ -8,11 +9,14 @@ public class Layer
     public Activation Activation { get; init; }
     public LayerIndex LayerIndex { get; init; }
     public List<Neuron> Neurons { get; init; } = new();
+    public IOptimizer Optimizer { get; init; } = null!;
 
-    public Layer(LayerIndex layerIndex, int neurons, Activation activation)
+
+    public Layer(LayerIndex layerIndex, int neurons, Activation activation, IOptimizer optimizer)
     {
         this.LayerIndex = layerIndex;
         this.Activation = activation;
+        this.Optimizer = optimizer;
 
         this.AddNeurons(neurons);
     }
@@ -21,6 +25,7 @@ public class Layer
     {
         this.LayerIndex = layerDto.LayerIndex;
         this.Activation = layerDto.Activation;
+        this.Optimizer = network.Optimizer;
 
         foreach (var neuronDto in layerDto.Neurons)
         {
@@ -32,7 +37,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Activation, this));
+            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Activation, this, this.Optimizer));
         }
     }
 

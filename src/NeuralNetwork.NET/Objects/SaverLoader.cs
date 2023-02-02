@@ -1,9 +1,10 @@
 ﻿using System.IO.Compression;
-using System.Security.AccessControl;
 using System.Text;
 using System.Text.Json;
 
 using NeuralNetwork.NET.Dto;
+using NeuralNetwork.NET.Objects;
+using NeuralNetwork.NET.Optimizers;
 
 namespace NeuralNetwork.NET;
 
@@ -15,13 +16,14 @@ public enum SaveType
 
 public partial class NeuralNetwork
 {
-    public static NeuralNetwork Load(string file)
-        => new(file);
-    public NeuralNetwork(string file)
-        : this(LoadFromJsonFile(file)) { }
+    public static NeuralNetwork Load(string file, IOptimizer optimizer)
+        => new(file, optimizer);
+    public NeuralNetwork(string file, IOptimizer optimizer)
+        : this(LoadFromJsonFile(file), optimizer) { }
 
-    public NeuralNetwork(NeuralNetworkDto dto) : this()
+    public NeuralNetwork(NeuralNetworkDto dto, IOptimizer optimizer) : this(optimizer)
     {
+        this.Optimizer = optimizer;
         foreach (var layerDto in dto.Layers)
         {
             var layer = new Layer(layerDto, this);

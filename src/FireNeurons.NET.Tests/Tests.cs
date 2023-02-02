@@ -34,11 +34,9 @@ public class Tests
         model.Randomize();
 
         //# Test
-        var data = new Data(new(LayerIndex, double[])[]
-        {
-            (0, new double[] { 2.6 }),
-            (1, new double[] { 21, -30 }),
-        });
+        var data = new Data();
+        data.Add(0, new double[] { 2.6 });
+        data.Add(1, new double[] { 21, -30 });
 
         var results = model.Evaluate(data, 3, 4);
     }
