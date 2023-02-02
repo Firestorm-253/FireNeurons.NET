@@ -1,4 +1,4 @@
-﻿namespace NeuralNetwork.NET.Dto;
+﻿namespace FireNeurons.NET.Dto;
 
 public record NeuralNetworkDto
 {

@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace NeuralNetwork.NET.Indexes;
+namespace FireNeurons.NET.Indexes;
 
 public readonly struct NeuronIndex : IEquatable<NeuronIndex>
 {
