@@ -30,4 +30,8 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="FireMath.NET" Version="1.0.0" />
+  </ItemGroup>
+
 </Project>
