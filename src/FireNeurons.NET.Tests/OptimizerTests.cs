@@ -1,5 +1,6 @@
 ﻿using FireNeurons.NET.Objects;
 using FireNeurons.NET.Optimizers;
+using Math.NET;
 
 namespace FireNeurons.NET.Tests;
 
@@ -90,7 +91,7 @@ public class OptimizerTests
 
                 for (int n = 0; n < values.Length; n++)
                 {
-                    loss += Math.Pow(targetValues[n] - values[n], 2);
+                    loss += (targetValues[n] - values[n]).Pow(2);
                 }
             }
         }

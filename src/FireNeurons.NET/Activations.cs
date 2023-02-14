@@ -1,4 +1,6 @@
-﻿namespace FireNeurons.NET;
+﻿using Math.NET;
+
+namespace FireNeurons.NET;
 
 public enum Activation
 {
@@ -47,23 +49,19 @@ public static class Activations
     }
 
     public static double Sigmoid(double value)
-    {
-        return 1 / (1 + Math.Pow(Math.E, -value));
-    }
+        => Math.NET.Activations.Activations.Sigmoid(value);
     public static double Sigmoid_d(double value)
     {
-        var ePowX = Math.Pow(Math.E, value);
+        var ePowX = Base.Exp(value);
         var ePowXp1 = ePowX + 1;
         return ePowX / (ePowXp1 * ePowXp1);
     }
 
     public static double TanH(double value)
-    {
-        return (2 / (1 + Math.Pow(Math.E, (-2 * value)))) - 1;
-    }
+        => Math.NET.Activations.Activations.TanH(value);
     public static double TanH_d(double value)
     {
-        var tanH = TanH(value);
+        var tanH = Math.NET.Activations.Activations.TanH(value);
         return 1 - (tanH * tanH);
     }
 
@@ -77,9 +75,7 @@ public static class Activations
     }
 
     public static double LeakyRelu(double value, double alpha = 0.3)
-    {
-        return (value > 0) ? value : (value * alpha);
-    }
+        => Math.NET.Activations.Activations.LeakyRelu(value, alpha);
     public static double LeakyRelu_d(double value, double alpha = 0.3)
     {
         return (value > 0) ? 1 : alpha;

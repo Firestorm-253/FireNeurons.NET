@@ -1,5 +1,6 @@
 ﻿global using static Globals;
 global using static FireNeurons.NET.Randoms;
+using Math.NET;
 
 public static class Globals
 {
@@ -13,6 +14,6 @@ public static class Globals
     /// <param name="timeStep">starts at 1 !!!</param>
     public static double FixBias(this double value, double discountFactor, int timeStep)
     {
-        return value / (1 - Math.Pow(discountFactor, timeStep));
+        return value / (1 - Base.Pow(discountFactor, timeStep));
     }
 }
