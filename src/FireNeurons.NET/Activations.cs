@@ -10,6 +10,7 @@ public enum Activation
     TanH,
     Relu,
     LeakyRelu,
+    Softplus,
 }
 
 public static class Activations
@@ -23,6 +24,7 @@ public static class Activations
             Activation.TanH => TanH(value),
             Activation.Relu => Relu(value),
             Activation.LeakyRelu => LeakyRelu(value),
+            Activation.Softplus => Softplus(value),
             _ => throw new NotImplementedException(),
         };
     }
@@ -35,6 +37,7 @@ public static class Activations
             Activation.TanH => TanH_d(value),
             Activation.Relu => Relu_d(value),
             Activation.LeakyRelu => LeakyRelu_d(value),
+            Activation.Softplus => Softplus_d(value),
             _ => throw new NotImplementedException(),
         };
     }
@@ -79,5 +82,12 @@ public static class Activations
     public static double LeakyRelu_d(double value, double alpha = 0.3)
     {
         return (value > 0) ? 1 : alpha;
+    }
+
+    public static double Softplus(double value)
+        => Math.NET.Activations.Activations.Softplus(value);
+    public static double Softplus_d(double value)
+    {
+        return Sigmoid(value);
     }
 }
