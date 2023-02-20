@@ -16,6 +16,7 @@ public static class Randoms
             Activation.TanH => XavierRandom(incomingAmout + 1, outgoingAmount + 1),
             Activation.Relu => HeRandom(incomingAmout + 1),
             Activation.LeakyRelu => HeRandom(incomingAmout + 1),
+            Activation.Softplus => HeRandom(incomingAmout + 1),
             _ => throw new ArgumentException("ERROR: Invalid activation!"),
         };
     }
