@@ -35,7 +35,12 @@ public partial class NeuralNetwork
     public void Save(string file, SaveType saveType)
     {
         var dto = new NeuralNetworkDto(this);
-        file = Path.GetFileNameWithoutExtension(file);
+
+        file = Path.GetFullPath(file);
+        if (Path.HasExtension(file))
+        {
+            file = file.Replace(Path.GetExtension(file), string.Empty);
+        }
 
         switch (saveType)
         {
