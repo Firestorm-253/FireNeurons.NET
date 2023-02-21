@@ -1,6 +1,8 @@
-﻿global using static Globals;
+﻿global using static FireNeurons.NET.Globals;
 global using static FireNeurons.NET.Randoms;
 using Math.NET;
+
+namespace FireNeurons.NET;
 
 public static class Globals
 {
