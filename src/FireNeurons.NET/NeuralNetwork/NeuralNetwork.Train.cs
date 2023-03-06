@@ -5,52 +5,52 @@ namespace FireNeurons.NET;
 
 public partial class NeuralNetwork
 {
-    public void Train(List<(Data, Data)> dataTargetSet, int iterations)
+    public void Train(List<(Data, Data)> dataLossArgsSet, int iterations)
     {
         for (int iteration = 0; iteration < iterations; iteration++)
         {
-            dataTargetSet = dataTargetSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
+            dataLossArgsSet = dataLossArgsSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
 
-            this.Train(dataTargetSet);
+            this.Train(dataLossArgsSet);
         }
     }
 
-    public void Train(List<(Data, Data)> dataTargetSet)
+    public void Train(List<(Data, Data)> dataLossArgsSet)
     {
-        foreach (var dataTarget in dataTargetSet)
+        foreach (var dataTarget in dataLossArgsSet)
         {
             this.Train(dataTarget.Item1, dataTarget.Item2);
         }
     }
 
-    public void Train(Data data, Data target)
+    public void Train(Data data, Data lossArgs)
     {
-        var targetIndexes = target.DataLayers.Keys.ToArray();
+        var targetIndexes = lossArgs.DataLayers.Keys.ToArray();
 
         this.Evaluate(data, targetIndexes);
 
-        this.TrainTargetLayers(target);
+        this.TrainTargetLayers(lossArgs);
         
         this.TrainHiddenLayers(targetIndexes);
     }
 
-    private void TrainTargetLayers(Data target)
+    private void TrainTargetLayers(Data lossArgs)
     {
-        foreach (var dataLayer in target.DataLayers)
+        foreach (var lossArgsLayer in lossArgs.DataLayers)
         {
-            var targetLayer = this.Get(dataLayer.Key);
+            var targetLayer = this.Get(lossArgsLayer.Key);
 
-            this.TrainTargetLayer(targetLayer, dataLayer.Value);
+            this.TrainTargetLayer(targetLayer, lossArgsLayer.Value);
         }
     }
 
-    private void TrainTargetLayer(Layer targetLayer, double[] target)
+    private void TrainTargetLayer(Layer targetLayer, double[] lossArgs)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
             var targetNeuron = targetLayer.Neurons[n];
 
-            this.Optimizer.CalculateGradient(targetNeuron, (target[n] - targetNeuron.Value));
+            this.Optimizer.CalculateGradient(targetNeuron, this.Optimizer.LossDerivative(targetNeuron, lossArgs[n]));
             this.Optimizer.CalculateDelta(targetNeuron.OptimizerData);
         }
     }

@@ -13,7 +13,11 @@ public class Tests
     [TestMethod]
     public void SaveLoad()
     {
-        var model = new NeuralNetwork(new Adam());
+        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        {
+            return (arg - neuron.Value); // MSE-Derivative
+        });
+        var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
         model.Save("models\\m1.abgsdfgr", SaveType.Binary);
     }
@@ -25,7 +29,11 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var optimizer = new Optimizers.SGD(0.02);
+        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        {
+            return (arg - neuron.Value); // MSE-Derivative
+        });
+        var optimizer = new SGD(lossDerivative, 0.02);
         var model = new NeuralNetwork(optimizer);
 
         //# InputLayers
