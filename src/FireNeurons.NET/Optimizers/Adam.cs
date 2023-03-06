@@ -1,6 +1,5 @@
 ﻿using FireNeurons.NET.Objects;
 using Math.NET;
-using System.Runtime.CompilerServices;
 
 namespace FireNeurons.NET.Optimizers;
 
@@ -11,7 +10,7 @@ public class Adam : SGD
     public double Beta_1 { get; init; }
     public double Beta_2 { get; init; }
 
-    public Adam(double learningRate = 0.001, double beta_1 = 0.90, double beta_2 = 0.99) : base(learningRate)
+    public Adam(Func<Neuron, double, double> lossDerivative, double learningRate = 0.001, double beta_1 = 0.90, double beta_2 = 0.99) : base(lossDerivative, learningRate)
     {
         this.Beta_1 = beta_1;
         this.Beta_2 = beta_2;

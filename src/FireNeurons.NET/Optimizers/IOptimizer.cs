@@ -4,12 +4,15 @@ namespace FireNeurons.NET.Optimizers;
 
 public abstract class IOptimizer
 {
+    public Func<Neuron, double, double> LossDerivative { get; init; }
     public double LearningRate { get; init; }
+
     public abstract IOptimizerData DataInstance { get; }
 
-    public IOptimizer(double learningRate)
+    public IOptimizer(Func<Neuron, double, double> lossDerivative, double learningRate)
     {
         this.LearningRate = learningRate;
+        this.LossDerivative = lossDerivative;
     }
 
     public abstract void CalculateDelta(IOptimizerData optimizerData);
