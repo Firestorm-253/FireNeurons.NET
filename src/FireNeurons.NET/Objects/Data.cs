@@ -12,8 +12,12 @@ public record Data
         this.DataLayers = new Dictionary<LayerIndex, double[]>(dataLayers);
     }
 
-    public Data Add(LayerIndex layerIndex, double[] values)
+    public Data Add(LayerIndex layerIndex, params double[] values)
     {
+        if (values.Length == 0)
+        {
+            throw new ArgumentException("ERROR: Values can't be empty!");
+        }
         if (this.DataLayers.ContainsKey(layerIndex))
         {
             throw new ArgumentException("ERROR: DataLayer already exists!");
