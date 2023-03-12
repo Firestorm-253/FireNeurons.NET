@@ -1,4 +1,4 @@
-﻿using Math.NET;
+﻿using FireMath.NET;
 
 namespace FireNeurons.NET;
 
@@ -52,19 +52,19 @@ public static class Activations
     }
 
     public static double Sigmoid(double value)
-        => Math.NET.Activations.Activations.Sigmoid(value);
+        => FireMath.NET.Activations.Activations.Sigmoid(value);
     public static double Sigmoid_d(double value)
     {
-        var ePowX = Base.Exp(value);
+        var ePowX = FireMath.NET.Math.Exp(value);
         var ePowXp1 = ePowX + 1;
         return ePowX / (ePowXp1 * ePowXp1);
     }
 
     public static double TanH(double value)
-        => Math.NET.Activations.Activations.TanH(value);
+        => FireMath.NET.Activations.Activations.TanH(value);
     public static double TanH_d(double value)
     {
-        var tanH = Math.NET.Activations.Activations.TanH(value);
+        var tanH = FireMath.NET.Activations.Activations.TanH(value);
         return 1 - (tanH * tanH);
     }
 
@@ -78,14 +78,14 @@ public static class Activations
     }
 
     public static double LeakyRelu(double value, double alpha = 0.3)
-        => Math.NET.Activations.Activations.LeakyRelu(value, alpha);
+        => FireMath.NET.Activations.Activations.LeakyRelu(value, alpha);
     public static double LeakyRelu_d(double value, double alpha = 0.3)
     {
         return (value > 0) ? 1 : alpha;
     }
 
     public static double Softplus(double value)
-        => Math.NET.Activations.Activations.Softplus(value);
+        => FireMath.NET.Activations.Activations.Softplus(value);
     public static double Softplus_d(double value)
     {
         return Sigmoid(value);

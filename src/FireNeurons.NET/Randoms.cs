@@ -1,5 +1,5 @@
-﻿using Math.NET;
-using Math.NET.Distributions;
+﻿using FireMath.NET;
+using FireMath.NET.Distributions;
 
 namespace FireNeurons.NET;
 
@@ -33,7 +33,7 @@ public static class Randoms
     {
         var stdDev = (2.0 / incomingAmount).Sqrt();
         var gaussian = Gaussian.ByMeanDeviation(0, stdDev);
-        return gaussian.GetRandom();
+        return gaussian.Sample();
     }
 
     public static double UniformRandom(double min, double max)

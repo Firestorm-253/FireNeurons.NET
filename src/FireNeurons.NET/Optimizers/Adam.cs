@@ -1,5 +1,5 @@
 ﻿using FireNeurons.NET.Objects;
-using Math.NET;
+using FireMath.NET;
 
 namespace FireNeurons.NET.Optimizers;
 

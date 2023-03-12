@@ -1,6 +1,6 @@
 ﻿using FireNeurons.NET.Objects;
 using FireNeurons.NET.Optimizers;
-using Math.NET;
+using FireMath.NET;
 
 namespace FireNeurons.NET.Tests;
 
