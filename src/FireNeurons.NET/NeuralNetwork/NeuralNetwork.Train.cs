@@ -5,25 +5,25 @@ namespace FireNeurons.NET;
 
 public partial class NeuralNetwork
 {
-    public void Train(List<(Data, Data)> dataLossArgsSet, int iterations)
+    public void Train(List<(Data, Data)> dataLossArgsSet, int iterations, bool apply = true)
     {
         for (int iteration = 0; iteration < iterations; iteration++)
         {
             dataLossArgsSet = dataLossArgsSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
 
-            this.Train(dataLossArgsSet);
+            this.Train(dataLossArgsSet, apply);
         }
     }
 
-    public void Train(List<(Data, Data)> dataLossArgsSet)
+    public void Train(List<(Data, Data)> dataLossArgsSet, bool apply = true)
     {
         foreach (var dataTarget in dataLossArgsSet)
         {
-            this.Train(dataTarget.Item1, dataTarget.Item2);
+            this.Train(dataTarget.Item1, dataTarget.Item2, apply);
         }
     }
 
-    public void Train(Data data, Data lossArgs)
+    public void Train(Data data, Data lossArgs, bool apply = true)
     {
         var targetIndexes = lossArgs.DataLayers.Keys.ToArray();
 
@@ -31,7 +31,7 @@ public partial class NeuralNetwork
 
         this.TrainTargetLayers(lossArgs);
         
-        this.TrainHiddenLayers(targetIndexes);
+        this.TrainHiddenLayers(targetIndexes, apply);
     }
 
     private void TrainTargetLayers(Data lossArgs)
@@ -55,7 +55,7 @@ public partial class NeuralNetwork
         }
     }
 
-    private void TrainHiddenLayers(LayerIndex[] targetIndexes)
+    private void TrainHiddenLayers(LayerIndex[] targetIndexes, bool apply)
     {
         foreach (var layer in this.Layers.OrderByDescending(x => x.LayerIndex.Index))
         {
@@ -64,29 +64,35 @@ public partial class NeuralNetwork
                 continue;
             }
 
-            this.TrainHiddenLayer(layer);
+            this.TrainHiddenLayer(layer, apply);
         }
     }
 
-    private void TrainHiddenLayer(Layer layer)
+    private void TrainHiddenLayer(Layer layer, bool apply)
     {
         foreach (var neuron in layer.Neurons)
         {
-            this.TrainHiddenNeuron(neuron);
+            this.TrainHiddenNeuron(neuron, apply);
         }
     }
 
-    private void TrainHiddenNeuron(Neuron neuron)
+    private void TrainHiddenNeuron(Neuron neuron, bool apply)
     {
         this.Optimizer.CalculateGradient(neuron);
 
         this.Optimizer.CalculateDelta(neuron.OptimizerData);
-        neuron.Bias += neuron.OptimizerData.Delta;
+        if (apply)
+        {
+            neuron.Bias += neuron.OptimizerData.Delta;
+        }
 
         foreach (var outgoingConnection in neuron.OutgoingConnections)
         {
             this.Optimizer.CalculateDelta(outgoingConnection.OptimizerData);
-            outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
+            if (apply)
+            {
+                outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
+            }
         }
     }
 }
