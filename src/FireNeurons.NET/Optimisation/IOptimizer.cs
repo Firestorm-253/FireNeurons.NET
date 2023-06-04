@@ -1,21 +1,21 @@
 ﻿using FireNeurons.NET.Objects;
 
-namespace FireNeurons.NET.Optimizers;
+namespace FireNeurons.NET.Optimisation;
 
-public abstract class IOptimizer
+public abstract class IOptimiser
 {
     public Func<Neuron, double, double> LossDerivative { get; init; }
     public double LearningRate { get; init; }
 
-    public abstract IOptimizerData DataInstance { get; }
+    public abstract IOptimiserData DataInstance { get; }
 
-    public IOptimizer(Func<Neuron, double, double> lossDerivative, double learningRate)
+    public IOptimiser(Func<Neuron, double, double> lossDerivative, double learningRate)
     {
         this.LearningRate = learningRate;
         this.LossDerivative = lossDerivative;
     }
 
-    public abstract void CalculateDelta(IOptimizerData optimizerData);
+    public abstract void CalculateDelta(IOptimiserData optimiserData);
 
     public void CalculateGradient(Neuron neuron, double loss)
     {
@@ -36,7 +36,7 @@ public abstract class IOptimizer
         double sum = 0;
         foreach (var connection in neuron.OutgoingConnections)
         {
-            sum += connection.Weight * connection.OutputNeuron.OptimizerData.Gradient;
+            sum += connection.Weight * connection.OutputNeuron.OptimiserData.Gradient;
         }
 
         SetAllGradients(neuron, sum);
@@ -47,16 +47,16 @@ public abstract class IOptimizer
         var derivation = neuron.Blank.Derivate(neuron.Activation);
         double gradient = derivation * loss;
 
-        neuron.OptimizerData.Gradient = gradient;
+        neuron.OptimiserData.Gradient = gradient;
 
         foreach (var connection in neuron.Connections)
         {
-            connection.OptimizerData.Gradient = gradient * connection.InputNeuron.Value;
+            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.Value;
         }
     }
 }
 
-public record IOptimizerData
+public record IOptimiserData
 {
     public double Delta { get; set; }
     public double Gradient { get; set; }

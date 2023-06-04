@@ -1,6 +1,6 @@
 using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimizers;
+using FireNeurons.NET.Optimisation;
 using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
@@ -33,8 +33,8 @@ public class Tests
         {
             return (arg - neuron.Value); // MSE-Derivative
         });
-        var optimizer = new SGD(lossDerivative, 0.02);
-        var model = new NeuralNetwork(optimizer);
+        var optimiser = new SGD(lossDerivative, 0.02);
+        var model = new NeuralNetwork(optimiser);
 
         //# InputLayers
         model.Add(1, 0, Activation.Identity);
@@ -65,8 +65,8 @@ public class Tests
     //    GlobalRandom = new Random(randomSeed);
 
     //    //# Initialize
-    //    var optimizer = new Optimizers.SGD(0.02);
-    //    var model = new NeuralNetwork(optimizer);
+    //    var optimiser = new Optimisation.SGD(0.02);
+    //    var model = new NeuralNetwork(optimiser);
 
     //    //# InputLayers
     //    model.Add(6, 0, Activation.Sigmoid);
@@ -87,8 +87,8 @@ public class Tests
     //    model.Save(name, SaveType.Binary);
     //    model.Save(name, SaveType.Json);
 
-    //    var binaryLoaded = new NeuralNetwork($"{name}.nn", optimizer);
-    //    var jsonLoaded = new NeuralNetwork($"{name}.json", optimizer);
+    //    var binaryLoaded = new NeuralNetwork($"{name}.nn", optimiser);
+    //    var jsonLoaded = new NeuralNetwork($"{name}.json", optimiser);
 
     //    Assert.AreEqual(binaryLoaded, jsonLoaded);
     //    Assert.AreEqual(model, binaryLoaded);

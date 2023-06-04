@@ -1,5 +1,5 @@
 ﻿using FireNeurons.NET.Dto;
-using FireNeurons.NET.Optimizers;
+using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET.Objects;
 
@@ -8,18 +8,18 @@ public class Connection
     public Neuron InputNeuron { get; init; }
     public Neuron OutputNeuron { get; init; }
 
-    public IOptimizer Optimizer { get; init; }
+    public IOptimiser Optimiser { get; init; }
 
     public double Weight { get; set; }
-    public IOptimizerData OptimizerData { get; set; } = null!; // for Weight
+    public IOptimiserData OptimiserData { get; set; } = null!; // for Weight
 
-    public Connection(Neuron inputNeuron, Neuron outputNeuron, IOptimizer optimizer)
+    public Connection(Neuron inputNeuron, Neuron outputNeuron, IOptimiser optimiser)
     {
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = inputNeuron;
-        this.Optimizer = optimizer;
+        this.Optimiser = optimiser;
 
-        this.OptimizerData = this.Optimizer.DataInstance;
+        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
     /// <summary>Deserialization</summary>
@@ -28,9 +28,9 @@ public class Connection
         this.Weight = connectionDto.Weight;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = network.Get(connectionDto.InputNeuron);
-        this.Optimizer = network.Optimizer;
+        this.Optimiser = network.Optimiser;
 
-        this.OptimizerData = this.Optimizer.DataInstance;
+        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
 

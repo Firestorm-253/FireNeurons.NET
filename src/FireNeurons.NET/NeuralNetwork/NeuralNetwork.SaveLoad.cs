@@ -4,7 +4,7 @@ using System.Text.Json;
 
 using FireNeurons.NET.Dto;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimizers;
+using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET;
 
@@ -16,14 +16,14 @@ public enum SaveType
 
 public partial class NeuralNetwork
 {
-    public static NeuralNetwork Load(string file, IOptimizer optimizer)
-        => new(file, optimizer);
-    public NeuralNetwork(string file, IOptimizer optimizer)
-        : this(LoadFromJsonFile(file), optimizer) { }
+    public static NeuralNetwork Load(string file, IOptimiser optimiser)
+        => new(file, optimiser);
+    public NeuralNetwork(string file, IOptimiser optimiser)
+        : this(LoadFromJsonFile(file), optimiser) { }
 
-    public NeuralNetwork(NeuralNetworkDto dto, IOptimizer optimizer) : this(optimizer)
+    public NeuralNetwork(NeuralNetworkDto dto, IOptimiser optimiser) : this(optimiser)
     {
-        this.Optimizer = optimizer;
+        this.Optimiser = optimiser;
         foreach (var layerDto in dto.Layers)
         {
             var layer = new Layer(layerDto, this);
