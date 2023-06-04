@@ -1,5 +1,5 @@
 ﻿using FireNeurons.NET.Objects;
-using Math.NET;
+using FireMath.NET;
 
 namespace FireNeurons.NET.Optimisation.Optimisers;
 
@@ -24,7 +24,7 @@ public class Adam : SGD
         }
 
         adamData.Momentum = adamData.Momentum.Discount(adamData.Gradient, this.Beta_1);
-        adamData.MomentumSquared = adamData.MomentumSquared.Discount(adamData.Gradient.Pow(2), this.Beta_2);
+        adamData.MomentumSquared = adamData.MomentumSquared.Discount(adamData.Gradient.Pow(), this.Beta_2);
 
         var momentum_fixed = adamData.Momentum.FixBias(this.Beta_1, adamData.TimeStep);
         var momentumSquared_fixed = adamData.MomentumSquared.FixBias(this.Beta_2, adamData.TimeStep);
