@@ -1,11 +1,13 @@
 ﻿using FireMath.NET;
-using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimizers;
 
 namespace FireNeurons.NET.Tests;
 
+using Objects;
+using Optimisation;
+using Optimisation.Optimisers;
+
 [TestClass]
-public class OptimizerTests
+public class OptimiserTests
 {
     const int randomSeed = 605013250;
 
@@ -26,13 +28,13 @@ public class OptimizerTests
         Assert.IsTrue(adam_percentage > sgd_percentage);
     }
 
-    private static double XOR_LossDecreasePercentage(IOptimizer optimizer)
+    private static double XOR_LossDecreasePercentage(IOptimiser optimiser)
     {
         //# Seed Randomizer
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var model = new NeuralNetwork(optimizer);
+        var model = new NeuralNetwork(optimiser);
 
         //# InputLayers
         model.Add(2, 0, Activation.Sigmoid);

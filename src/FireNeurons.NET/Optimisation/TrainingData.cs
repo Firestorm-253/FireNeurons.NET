@@ -1,4 +1,4 @@
-﻿namespace FireNeurons.NET.Optimizers;
+﻿namespace FireNeurons.NET.Optimisation;
 
 using Objects;
 

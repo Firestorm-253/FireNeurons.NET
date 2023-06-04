@@ -1,18 +1,18 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimizers;
+using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET;
 
 public partial class NeuralNetwork
 {
     public HashSet<Layer> Layers { get; init; }
-    public IOptimizer Optimizer { get; init; }
+    public IOptimiser Optimiser { get; init; }
 
-    public NeuralNetwork(IOptimizer optimizer)
+    public NeuralNetwork(IOptimiser optimiser)
     {
         this.Layers = new HashSet<Layer>(new LayerEqualityComparer());
-        this.Optimizer = optimizer;
+        this.Optimiser = optimiser;
     }
 
     public void Add(int neurons,
@@ -20,7 +20,7 @@ public partial class NeuralNetwork
                     Activation activation,
                     params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, activation, this.Optimizer);
+        var layer = new Layer(index, neurons, activation, this.Optimiser);
         
         foreach (var inputLayerIndex in inputs)
         {
@@ -38,7 +38,7 @@ public partial class NeuralNetwork
                     LayerIndex index,
                     Activation activation)
     {
-        var layer = new Layer(index, neurons, activation, this.Optimizer);
+        var layer = new Layer(index, neurons, activation, this.Optimiser);
 
         if (this.Layers.Contains(layer))
         {

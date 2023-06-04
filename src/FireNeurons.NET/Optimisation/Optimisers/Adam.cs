@@ -1,11 +1,11 @@
 ﻿using FireNeurons.NET.Objects;
 using Math.NET;
 
-namespace FireNeurons.NET.Optimizers;
+namespace FireNeurons.NET.Optimisation.Optimisers;
 
 public class Adam : SGD
 {
-    public override IOptimizerData DataInstance => new AdamData();
+    public override IOptimiserData DataInstance => new AdamData();
 
     public double Beta_1 { get; init; }
     public double Beta_2 { get; init; }
@@ -16,11 +16,11 @@ public class Adam : SGD
         this.Beta_2 = beta_2;
     }
 
-    public override void CalculateDelta(IOptimizerData optimizerData)
+    public override void CalculateDelta(IOptimiserData optimiserData)
     {
-        if (optimizerData is not AdamData adamData)
+        if (optimiserData is not AdamData adamData)
         {
-            throw new Exception("ERROR: Wrong optimizerData-type!");
+            throw new Exception("ERROR: Wrong optimiserData-type!");
         }
 
         adamData.Momentum = adamData.Momentum.Discount(adamData.Gradient, this.Beta_1);
@@ -29,14 +29,14 @@ public class Adam : SGD
         var momentum_fixed = adamData.Momentum.FixBias(this.Beta_1, adamData.TimeStep);
         var momentumSquared_fixed = adamData.MomentumSquared.FixBias(this.Beta_2, adamData.TimeStep);
 
-        var rawDelta = (momentum_fixed / (momentumSquared_fixed.Sqrt() + 10.0.Pow(-6)));
+        var rawDelta = momentum_fixed / (momentumSquared_fixed.Sqrt() + 10.0.Pow(-6));
         adamData.Delta = this.LearningRate * rawDelta;
 
         adamData.TimeStep++;
     }
 }
 
-public record AdamData : IOptimizerData
+public record AdamData : IOptimiserData
 {
     public int TimeStep { get; set; } = 1; // Starts at 1!!!
 

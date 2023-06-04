@@ -1,6 +1,6 @@
 ﻿using FireNeurons.NET.Dto;
 using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Optimizers;
+using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET.Objects;
 
@@ -12,11 +12,11 @@ public class Neuron
     public List<Connection> Connections { get; init; } = new();
     public List<Connection> OutgoingConnections { get; init; } = new();
 
-    public IOptimizer Optimizer { get; init; }
+    public IOptimiser Optimiser { get; init; }
 
     public double Bias { get; set; }
 
-    public IOptimizerData OptimizerData { get; set; } = null!; // for Neuron & Bias
+    public IOptimiserData OptimiserData { get; set; } = null!; // for Neuron & Bias
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; } = true;
@@ -32,14 +32,14 @@ public class Neuron
     public Neuron(NeuronIndex neuronIndex,
                   Activation activation,
                   Layer layer,
-                  IOptimizer optimizer)
+                  IOptimiser optimiser)
     {
         this.NeuronIndex = neuronIndex;
         this.Activation = activation;
         this.Layer = layer;
-        this.Optimizer = optimizer;
+        this.Optimiser = optimiser;
 
-        this.OptimizerData = this.Optimizer.DataInstance;
+        this.OptimiserData = this.Optimiser.DataInstance;
     }
     /// <summary>Deserialization</summary>
     public Neuron(NeuronDto neuronDto, Layer layer, NeuralNetwork network)
@@ -47,19 +47,19 @@ public class Neuron
         this.NeuronIndex = neuronDto.NeuronIndex;
         this.Activation = neuronDto.Activation;
         this.Layer = layer;
-        this.Optimizer = network.Optimizer;
+        this.Optimiser = network.Optimiser;
 
         foreach (var connectionDto in neuronDto.Connections)
         {
             this.Connections.Add(new Connection(connectionDto, this, network));
         }
 
-        this.OptimizerData = this.Optimizer.DataInstance;
+        this.OptimiserData = this.Optimiser.DataInstance;
     }
 
     public void Connect(Neuron input)
     {
-        this.Connections.Add(new Connection(input, this, this.Optimizer));
+        this.Connections.Add(new Connection(input, this, this.Optimiser));
     }
 
     public void Randomize(bool withBias)

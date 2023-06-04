@@ -1,7 +1,7 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
 
-namespace FireNeurons.NET.Optimizers;
+namespace FireNeurons.NET.Optimisation;
 
 public static class NeuralNetworkTrain
 {
@@ -43,8 +43,8 @@ public static class NeuralNetworkTrain
         {
             var targetNeuron = targetLayer.Neurons[n];
 
-            network.Optimizer.CalculateGradient(targetNeuron, network.Optimizer.LossDerivative(targetNeuron, lossArgs[n]));
-            network.Optimizer.CalculateDelta(targetNeuron.OptimizerData);
+            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossArgs[n]));
+            network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
         }
     }
 
@@ -71,15 +71,15 @@ public static class NeuralNetworkTrain
 
     private static void TrainHiddenNeuron(this NeuralNetwork network, Neuron neuron)
     {
-        network.Optimizer.CalculateGradient(neuron);
+        network.Optimiser.CalculateGradient(neuron);
 
-        network.Optimizer.CalculateDelta(neuron.OptimizerData);
-        neuron.Bias += neuron.OptimizerData.Delta;
+        network.Optimiser.CalculateDelta(neuron.OptimiserData);
+        neuron.Bias += neuron.OptimiserData.Delta;
 
         foreach (var outgoingConnection in neuron.OutgoingConnections)
         {
-            network.Optimizer.CalculateDelta(outgoingConnection.OptimizerData);
-            outgoingConnection.Weight += outgoingConnection.OptimizerData.Delta;
+            network.Optimiser.CalculateDelta(outgoingConnection.OptimiserData);
+            outgoingConnection.Weight += outgoingConnection.OptimiserData.Delta;
         }
     }
 }
