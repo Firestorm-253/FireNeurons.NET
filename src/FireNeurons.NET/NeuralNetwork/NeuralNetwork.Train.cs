@@ -1,46 +1,40 @@
-﻿using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Objects;
+﻿namespace FireNeurons.NET;
 
-namespace FireNeurons.NET;
+using Indexes;
+using Objects;
+using Optimizers;
 
 public partial class NeuralNetwork
 {
-    public void Train(List<(Data, Data)> dataLossArgsSet, int iterations)
+    public void Train(List<TrainingData> trainingDataSet, int iterations = 1, bool apply = true)
     {
         for (int iteration = 0; iteration < iterations; iteration++)
         {
-            dataLossArgsSet = dataLossArgsSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
+            trainingDataSet = trainingDataSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
 
-            this.Train(dataLossArgsSet);
+            foreach (var trainingData in trainingDataSet)
+            {
+                this.Train(trainingData, apply);
+            }
         }
     }
 
-    public void Train(List<(Data, Data)> dataLossArgsSet)
+    public void Train(TrainingData trainingData, bool apply = true)
     {
-        foreach (var dataTarget in dataLossArgsSet)
-        {
-            this.Train(dataTarget.Item1, dataTarget.Item2);
-        }
-    }
+        var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
-    public void Train(Data data, Data lossArgs)
-    {
-        var targetIndexes = lossArgs.DataLayers.Keys.ToArray();
+        this.Evaluate(trainingData.InputData, targetIndexes);
 
-        this.Evaluate(data, targetIndexes);
-
-        this.TrainTargetLayers(lossArgs);
+        this.TrainTargetLayers(trainingData.LossDerivativeArgs);
         
         this.TrainHiddenLayers(targetIndexes);
     }
 
-    private void TrainTargetLayers(Data lossArgs)
+    private void TrainTargetLayers(Data lossDerivativeArgs)
     {
-        foreach (var lossArgsLayer in lossArgs.DataLayers)
+        foreach (var lossArgsLayer in lossDerivativeArgs.DataLayers)
         {
-            var targetLayer = this.Get(lossArgsLayer.Key);
-
-            this.TrainTargetLayer(targetLayer, lossArgsLayer.Value);
+            this.TrainTargetLayer(this.Get(lossArgsLayer.Key), lossArgsLayer.Value);
         }
     }
 
