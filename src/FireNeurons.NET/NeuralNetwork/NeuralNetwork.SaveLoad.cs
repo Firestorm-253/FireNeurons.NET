@@ -2,11 +2,11 @@
 using System.Text;
 using System.Text.Json;
 
-using FireNeurons.NET.Dto;
-using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimisation;
-
 namespace FireNeurons.NET;
+
+using Dto;
+using Objects;
+using Optimisation;
 
 public enum SaveType
 {
@@ -17,11 +17,15 @@ public enum SaveType
 public partial class NeuralNetwork
 {
     public static NeuralNetwork Load(string file, IOptimiser optimiser)
-        => new(file, optimiser);
-    public NeuralNetwork(string file, IOptimiser optimiser)
-        : this(LoadFromJsonFile(file), optimiser) { }
+    {
+        return new(file, optimiser);
+    }
 
-    public NeuralNetwork(NeuralNetworkDto dto, IOptimiser optimiser) : this(optimiser)
+    public NeuralNetwork(string file, IOptimiser optimiser)
+        : this(LoadFromFile(file), optimiser)
+    { }
+    public NeuralNetwork(NeuralNetworkDto dto, IOptimiser optimiser)
+        : this(optimiser)
     {
         this.Optimiser = optimiser;
         foreach (var layerDto in dto.Layers)
@@ -31,6 +35,10 @@ public partial class NeuralNetwork
         }
     }
 
+    public NeuralNetwork Clone()
+    {
+        return new(FromJson(ToJson(new(this))), this.Optimiser);
+    }
 
     public void Save(string file, SaveType saveType)
     {
@@ -46,14 +54,12 @@ public partial class NeuralNetwork
         {
             case SaveType.Json:
                 {
-                    string json = JsonSerializer.Serialize(dto, new JsonSerializerOptions() { WriteIndented = true });
-                    File.WriteAllText(file + ".json", json);
+                    File.WriteAllText(file + ".json", ToJson(dto));
                 }
                 break;
             case SaveType.Binary:
                 {
-                    string json = JsonSerializer.Serialize(dto, new JsonSerializerOptions() { WriteIndented = false });
-                    var zipped = Zip(json);
+                    var zipped = Zip(ToJson(dto));
                     File.WriteAllBytes(file + ".nn", zipped);
                 }
                 break;
@@ -61,11 +67,11 @@ public partial class NeuralNetwork
         }
     }
 
-    private static NeuralNetworkDto LoadFromJsonFile(string file)
+    private static NeuralNetworkDto LoadFromFile(string file)
     {
         if (!File.Exists(file))
         {
-            throw new Exception("ERROR: File does not exist!");
+            throw new FileNotFoundException();
         }
 
         NeuralNetworkDto? dto;
@@ -75,7 +81,7 @@ public partial class NeuralNetwork
             case ".json":
                 {
                     string json = File.ReadAllText(file);
-                    dto = JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = true, });
+                    dto = FromJson(json);
                 }
                 break;
             case ".nn":
@@ -95,6 +101,14 @@ public partial class NeuralNetwork
         return dto;
     }
 
+    public static NeuralNetworkDto FromJson(string json)
+    {
+        return JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = true, })!;
+    }
+    public static string ToJson(NeuralNetworkDto neuralNetworkDto)
+    {
+        return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = true })!;
+    }
 
     private static byte[] Zip(string str)
     {

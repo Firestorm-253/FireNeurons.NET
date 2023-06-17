@@ -1,9 +1,11 @@
-using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimisation;
 using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
+
+using Indexes;
+using Objects;
+using Optimisation;
+using Optimisation.Optimisers;
 
 [TestClass]
 public class Tests
@@ -20,6 +22,21 @@ public class Tests
         var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
         model.Save("models\\m1.abgsdfgr", SaveType.Binary);
+
+        var loaded = new NeuralNetwork("models\\m1.nn", new Adam(lossDerivative));
+    }
+
+    [TestMethod]
+    public void Clone()
+    {
+        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        {
+            return (arg - neuron.Value); // MSE-Derivative
+        });
+        var model = new NeuralNetwork(new Adam(lossDerivative));
+        model.Add(1, 0, Activation.Identity);
+        
+        var clone = model.Clone();
     }
 
     [TestMethod]
