@@ -18,11 +18,11 @@ public class OptimiserTests
 
         var sgd_percentage = XOR_LossDecreasePercentage(new SGD(new Func<Neuron, double, double>((neuron, arg) =>
         {
-            return (arg - neuron.Value); // MSE-Derivative
+            return (arg - neuron.GetValue(true)); // MSE-Derivative
         }), learningRate));
         var adam_percentage = XOR_LossDecreasePercentage(new Adam(new Func<Neuron, double, double>((neuron, arg) =>
         {
-            return (arg - neuron.Value); // MSE-Derivative
+            return (arg - neuron.GetValue(true)); // MSE-Derivative
         })));
 
         Assert.IsTrue(adam_percentage > sgd_percentage);
@@ -37,12 +37,12 @@ public class OptimiserTests
         var model = new NeuralNetwork(optimiser);
 
         //# InputLayers
-        model.Add(2, 0, Activation.Sigmoid);
+        model.Add(2, 0, new Options() { Activation = Activation.Identity, Dropout = 0.00 });
 
         //# HiddenLayers
-        model.Add(100, 1, Activation.LeakyRelu, 0);
-        model.Add(100, 2, Activation.LeakyRelu, 1);
-        model.Add(100, 3, Activation.LeakyRelu, 2);
+        model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10 }, 0);
+        model.Add(100, 2, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10 }, 1);
+        model.Add(100, 3, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10 }, 2);
 
         //# OutputLayers
         model.Add(1, 4, Activation.Sigmoid, 3);
@@ -64,20 +64,20 @@ public class OptimiserTests
 
         var resultsBefore = new Data[]
         {
-            model.Evaluate(trainingDataSet[0].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[1].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[2].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[3].InputData, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
         };
 
         model.Train(trainingDataSet, iterations: 200);
 
         var resultsAfter = new Data[]
         {
-            model.Evaluate(trainingDataSet[0].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[1].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[2].InputData, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[3].InputData, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
         };
 
         double mseBefore = MSE(resultsBefore, trainingDataSet.Select(x => x.LossDerivativeArgs).ToArray());

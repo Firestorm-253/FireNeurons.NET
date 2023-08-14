@@ -5,7 +5,7 @@ namespace FireNeurons.NET.Optimisation;
 
 public static class NeuralNetworkTrain
 {
-    public static void Train(this NeuralNetwork network, List<TrainingData> trainingDataSet, int iterations = 1, bool apply = true)
+    public static void Train(this NeuralNetwork network, List<TrainingData> trainingDataSet, int iterations = 1)
     {
         for (int iteration = 0; iteration < iterations; iteration++)
         {
@@ -13,16 +13,16 @@ public static class NeuralNetworkTrain
 
             foreach (var trainingData in trainingDataSet)
             {
-                network.Train(trainingData, apply);
+                network.Train(trainingData);
             }
         }
     }
 
-    public static void Train(this NeuralNetwork network, TrainingData trainingData, bool apply = true)
+    public static void Train(this NeuralNetwork network, TrainingData trainingData)
     {
         var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
-        network.Evaluate(trainingData.InputData, targetIndexes);
+        network.Evaluate(trainingData.InputData, true, targetIndexes);
 
         network.TrainTargetLayers(trainingData.LossDerivativeArgs);
 
@@ -42,6 +42,13 @@ public static class NeuralNetworkTrain
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
             var targetNeuron = targetLayer.Neurons[n];
+
+            if (targetNeuron.DroppedOut)
+            {
+                targetNeuron.OptimiserData.Gradient = 0;
+                targetNeuron.OptimiserData.Delta = 0;
+                continue;
+            }
 
             network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossArgs[n]));
             network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
@@ -65,6 +72,13 @@ public static class NeuralNetworkTrain
     {
         foreach (var neuron in layer.Neurons)
         {
+            if (neuron.DroppedOut)
+            {
+                neuron.OptimiserData.Gradient = 0;
+                neuron.OptimiserData.Delta = 0;
+                continue;
+            }
+
             network.TrainHiddenNeuron(neuron);
         }
     }

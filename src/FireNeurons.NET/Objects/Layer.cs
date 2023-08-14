@@ -6,16 +6,16 @@ namespace FireNeurons.NET.Objects;
 
 public class Layer
 {
-    public Activation Activation { get; init; }
+    public Options Options { get; init; }
     public LayerIndex LayerIndex { get; init; }
     public List<Neuron> Neurons { get; init; } = new();
     public IOptimiser Optimiser { get; init; } = null!;
 
 
-    public Layer(LayerIndex layerIndex, int neurons, Activation activation, IOptimiser optimiser)
+    public Layer(LayerIndex layerIndex, int neurons, Options options, IOptimiser optimiser)
     {
         this.LayerIndex = layerIndex;
-        this.Activation = activation;
+        this.Options = options;
         this.Optimiser = optimiser;
 
         this.AddNeurons(neurons);
@@ -24,7 +24,7 @@ public class Layer
     public Layer(LayerDto layerDto, NeuralNetwork network)
     {
         this.LayerIndex = layerDto.LayerIndex;
-        this.Activation = layerDto.Activation;
+        this.Options = layerDto.Options;
         this.Optimiser = network.Optimiser;
 
         foreach (var neuronDto in layerDto.Neurons)
@@ -37,7 +37,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Activation, this, this.Optimiser));
+            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Options, this, this.Optimiser));
         }
     }
 
@@ -52,15 +52,15 @@ public class Layer
         }
     }
 
-    public void Randomize(bool withBias)
+    public void Randomize()
     {
         foreach (var neuron in this.Neurons)
         {
-            neuron.Randomize(withBias);
+            neuron.Randomize();
         }
     }
 
-    public void Calculate()
+    public void Calculate(bool isTraining)
     {
         foreach (var neuron in this.Neurons)
         {
@@ -69,7 +69,7 @@ public class Layer
                 continue;
             }
 
-            neuron.CalculateValue();
+            neuron.GetValue(isTraining);
         }
     }
 

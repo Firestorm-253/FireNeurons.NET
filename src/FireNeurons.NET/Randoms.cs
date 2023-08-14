@@ -2,6 +2,7 @@
 using FireMath.NET.Distributions;
 
 namespace FireNeurons.NET;
+using Objects;
 
 public static class Randoms
 {
