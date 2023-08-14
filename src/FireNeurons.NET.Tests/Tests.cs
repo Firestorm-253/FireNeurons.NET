@@ -2,9 +2,7 @@ using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
 
-using Indexes;
 using Objects;
-using Optimisation;
 using Optimisation.Optimisers;
 
 [TestClass]
