@@ -17,10 +17,10 @@ public partial class NeuralNetwork
 
     public void Add(int neurons,
                     LayerIndex index,
-                    Activation activation,
+                    Options options,
                     params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, activation, this.Optimiser);
+        var layer = new Layer(index, neurons, options, this.Optimiser);
         
         foreach (var inputLayerIndex in inputs)
         {
@@ -36,22 +36,17 @@ public partial class NeuralNetwork
     }
     public void Add(int neurons,
                     LayerIndex index,
-                    Activation activation)
+                    Activation activation,
+                    params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, activation, this.Optimiser);
-
-        if (this.Layers.Contains(layer))
-        {
-            throw new Exception("ERROR: LayerIndex must be unique!");
-        }
-        this.Layers.Add(layer);
+        this.Add(neurons, index, new Options() { Activation = activation }, inputs);
     }
 
-    public void Randomize(bool withBias = true)
+    public void Randomize()
     {
         foreach (var layer in this.Layers)
         {
-            layer.Randomize(withBias);
+            layer.Randomize();
         }
     }
 
@@ -127,7 +122,7 @@ public partial class NeuralNetwork
                 var neuron = layer.Neurons[n];
                 var checkNeuron = checkLayer.Neurons[n];
                 if (!neuron.Equals(checkNeuron)) return false;
-                if (neuron.Activation != checkNeuron.Activation) return false;
+                if (neuron.Options.Activation != checkNeuron.Options.Activation) return false;
                 if (neuron.Connections.Count != checkNeuron.Connections.Count) return false;
 
                 for (int c = 0; c < neuron.Connections.Count; c++)

@@ -44,7 +44,7 @@ public abstract class IOptimiser
 
     private static void SetAllGradients(Neuron neuron, double loss)
     {
-        var derivation = neuron.Blank.Derivate(neuron.Activation);
+        var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
         double gradient = derivation * loss;
 
         neuron.OptimiserData.Gradient = gradient;

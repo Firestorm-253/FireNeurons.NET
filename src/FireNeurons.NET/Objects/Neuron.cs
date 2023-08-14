@@ -7,7 +7,7 @@ namespace FireNeurons.NET.Objects;
 public class Neuron
 {
     public NeuronIndex NeuronIndex { get; init; }
-    public Activation Activation { get; init; }
+    public Options Options { get; init; }
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
     public List<Connection> OutgoingConnections { get; init; } = new();
@@ -30,12 +30,12 @@ public class Neuron
     public bool IsWorking => this.Connections.Count != 0;
 
     public Neuron(NeuronIndex neuronIndex,
-                  Activation activation,
+                  Options options,
                   Layer layer,
                   IOptimiser optimiser)
     {
         this.NeuronIndex = neuronIndex;
-        this.Activation = activation;
+        this.Options = options;
         this.Layer = layer;
         this.Optimiser = optimiser;
 
@@ -45,7 +45,7 @@ public class Neuron
     public Neuron(NeuronDto neuronDto, Layer layer, NeuralNetwork network)
     {
         this.NeuronIndex = neuronDto.NeuronIndex;
-        this.Activation = neuronDto.Activation;
+        this.Options = neuronDto.Options;
         this.Layer = layer;
         this.Optimiser = network.Optimiser;
 
@@ -62,16 +62,16 @@ public class Neuron
         this.Connections.Add(new Connection(input, this, this.Optimiser));
     }
 
-    public void Randomize(bool withBias)
+    public void Randomize()
     {
         foreach (var connection in this.Connections)
         {
-            connection.Randomize(this.Activation);
+            connection.Randomize(this.Options.Activation);
         }
 
-        if (withBias)
+        if (this.Options.UseBias)
         {
-            this.Bias = GetRandom(this.Activation, this.Connections.Count, this.Layer.Neurons.Count);
+            this.Bias = GetRandom(this.Options.Activation, this.Connections.Count, this.Layer.Neurons.Count);
         }
     }
 
@@ -96,7 +96,7 @@ public class Neuron
     private double Set(double blank)
     {
         this.Blank = blank;
-        return this.Value = this.Blank.Activate(this.Activation);
+        return this.Value = this.Blank.Activate(this.Options.Activation);
     }
 
     public void Feed(double blank)
