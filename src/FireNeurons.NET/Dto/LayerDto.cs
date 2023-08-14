@@ -6,14 +6,14 @@ namespace FireNeurons.NET.Dto;
 public record LayerDto
 {
     public LayerIndex LayerIndex { get; init; }
-    public Activation Activation { get; init; }
+    public Options Options { get; init; }
     public List<NeuronDto> Neurons { get; init; } = new();
 
     public LayerDto() { }
     public LayerDto(Layer layer)
     {
         this.LayerIndex = layer.LayerIndex;
-        this.Activation = layer.Activation;
+        this.Options = layer.Options;
 
         foreach (var neuron in layer.Neurons)
         {

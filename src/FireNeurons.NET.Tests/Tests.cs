@@ -2,9 +2,7 @@ using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
 
-using Indexes;
 using Objects;
-using Optimisation;
 using Optimisation.Optimisers;
 
 [TestClass]
@@ -17,7 +15,7 @@ public class Tests
     {
         var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
         {
-            return (arg - neuron.Value); // MSE-Derivative
+            return (arg - neuron.GetValue(true)); // MSE-Derivative
         });
         var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
@@ -31,7 +29,7 @@ public class Tests
     {
         var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
         {
-            return (arg - neuron.Value); // MSE-Derivative
+            return (arg - neuron.GetValue(true)); // MSE-Derivative
         });
         var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
@@ -48,7 +46,7 @@ public class Tests
         //# Initialize
         var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
         {
-            return (arg - neuron.Value); // MSE-Derivative
+            return (arg - neuron.GetValue(true)); // MSE-Derivative
         });
         var optimiser = new SGD(lossDerivative, 0.02);
         var model = new NeuralNetwork(optimiser);
@@ -72,7 +70,7 @@ public class Tests
         data.Add(0, new double[] { 2.6 });
         data.Add(1, new double[] { 21, -30 });
 
-        var results = model.Evaluate(data, 3, 4);
+        var results = model.Evaluate(data, false, 3, 4);
     }
 
     //[TestMethod]

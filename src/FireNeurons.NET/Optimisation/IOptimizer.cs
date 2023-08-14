@@ -44,14 +44,14 @@ public abstract class IOptimiser
 
     private static void SetAllGradients(Neuron neuron, double loss)
     {
-        var derivation = neuron.Blank.Derivate(neuron.Activation);
+        var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
         double gradient = derivation * loss;
 
         neuron.OptimiserData.Gradient = gradient;
 
         foreach (var connection in neuron.Connections)
         {
-            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.Value;
+            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.GetValue(true);
         }
     }
 }
