@@ -39,8 +39,8 @@ public class Connection
         this.Weight = GetRandom(activation, this.OutputNeuron.Connections.Count, this.OutputNeuron.Layer.Neurons.Count);
     }
 
-    public double GetValue()
+    public double GetValue(bool isTraining)
     {
-        return this.InputNeuron.Value * this.Weight;
+        return this.InputNeuron.GetValue(isTraining) * this.Weight;
     }
 }

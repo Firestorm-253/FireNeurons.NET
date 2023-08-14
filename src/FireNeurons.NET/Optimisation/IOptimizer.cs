@@ -51,7 +51,7 @@ public abstract class IOptimiser
 
         foreach (var connection in neuron.Connections)
         {
-            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.Value;
+            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.GetValue(true);
         }
     }
 }

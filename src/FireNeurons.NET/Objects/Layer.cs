@@ -60,7 +60,7 @@ public class Layer
         }
     }
 
-    public void Calculate()
+    public void Calculate(bool isTraining)
     {
         foreach (var neuron in this.Neurons)
         {
@@ -69,7 +69,7 @@ public class Layer
                 continue;
             }
 
-            neuron.CalculateValue();
+            neuron.GetValue(isTraining);
         }
     }
 

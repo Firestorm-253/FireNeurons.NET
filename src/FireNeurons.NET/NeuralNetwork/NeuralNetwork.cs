@@ -63,7 +63,7 @@ public partial class NeuralNetwork
         }
     }
 
-    public Data Evaluate(Data data, params LayerIndex[] outputLayers)
+    public Data Evaluate(Data data, bool isTraining = false, params LayerIndex[] outputLayers)
     {
         foreach (var layer in this.Layers)
         {
@@ -74,7 +74,7 @@ public partial class NeuralNetwork
 
         foreach (var layer in this.Layers)
         {
-            layer.Calculate();
+            layer.Calculate(isTraining);
         }
 
         var outputs = new KeyValuePair<LayerIndex, double[]>[outputLayers.Length];
@@ -85,7 +85,7 @@ public partial class NeuralNetwork
 
             for (int n = 0; n < outputLayer.Neurons.Count; n++)
             {
-                outputData[n] = outputLayer.Neurons[n].Value;
+                outputData[n] = outputLayer.Neurons[n].GetValue(isTraining);
             }
 
             outputs[l] = new(outputLayers[l], outputData);

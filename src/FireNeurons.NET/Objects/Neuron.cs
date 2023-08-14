@@ -21,13 +21,14 @@ public class Neuron
 
     public bool CalculationNeeded { get; set; } = true;
     private double _value;
-    public double Value
-    {
-        get => this.CalculationNeeded && this.IsWorking ? this.CalculateValue() : this._value;
-        set => this._value = value;
-    }
+    //public double Value
+    //{
+    //    get => this.CalculationNeeded && this.IsWorking ? this.CalculateValue() : this._value;
+    //    set => this._value = value;
+    //}
 
-    public bool IsWorking => this.Connections.Count != 0;
+    public bool IsWorking => (this.Connections.Count != 0) && !this.DroppedOut;
+    public bool DroppedOut { get; private set; } = false;
 
     public Neuron(NeuronIndex neuronIndex,
                   Options options,
@@ -69,25 +70,39 @@ public class Neuron
             connection.Randomize(this.Options.Activation);
         }
 
-        if (this.Options.UseBias)
+        if (this.Options.UseBias && this.Connections.Count > 0)
         {
             this.Bias = GetRandom(this.Options.Activation, this.Connections.Count, this.Layer.Neurons.Count);
         }
     }
 
-    public double CalculateValue()
+    public double GetValue(bool isTraining)
     {
-        if (!this.IsWorking)
+        if (!this.CalculationNeeded)
         {
-            return this.Value;
+            return this._value;
+        }
+        this.CalculationNeeded = false;
+
+        if (isTraining)
+        {
+            this.DroppedOut = (GlobalRandom.NextDouble() < this.Options.Dropout);
         }
 
-        this.CalculationNeeded = false;
+        if (!this.IsWorking)
+        {
+            return this._value;
+        }
 
         double sum = this.Bias;
         foreach (var connection in this.Connections)
         {
-            sum += connection.GetValue();
+            var value = connection.GetValue(isTraining);
+            if (this.DroppedOut)
+            {
+                value *= (1 - connection.InputNeuron.Options.Dropout);
+            }
+            sum += value;
         }
 
         return this.Set(sum);
@@ -96,7 +111,7 @@ public class Neuron
     private double Set(double blank)
     {
         this.Blank = blank;
-        return this.Value = this.Blank.Activate(this.Options.Activation);
+        return this._value = this.Blank.Activate(this.Options.Activation);
     }
 
     public void Feed(double blank)
@@ -114,8 +129,9 @@ public class Neuron
     public void Invalidate()
     {
         this.Blank = 0;
-        this.Value = 0;
+        this._value = 0;
         this.CalculationNeeded = true;
+        this.DroppedOut = false;
     }
 
     public override bool Equals(object? obj)
