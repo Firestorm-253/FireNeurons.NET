@@ -98,7 +98,7 @@ public class Neuron
         foreach (var connection in this.Connections)
         {
             var value = connection.GetValue(isTraining);
-            if (this.DroppedOut)
+            if (!isTraining)
             {
                 value *= (1 - connection.InputNeuron.Options.Dropout);
             }
