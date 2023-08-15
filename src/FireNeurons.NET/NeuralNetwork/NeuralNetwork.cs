@@ -91,7 +91,7 @@ public partial class NeuralNetwork
             outputs[l] = new(outputLayers[l], outputData);
         }
 
-        return new Data(outputs);
+        return new(outputs);
     }
 
     public Layer Get(LayerIndex layerIndex)

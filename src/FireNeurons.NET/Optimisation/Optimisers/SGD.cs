@@ -6,7 +6,7 @@ public class SGD : IOptimiser
 {
     public override IOptimiserData DataInstance => new IOptimiserData();
 
-    public SGD(Func<Neuron, double, double> lossDerivative, double learningRate) : base(lossDerivative, learningRate)
+    public SGD(Func<Neuron, object?, object, double> lossDerivative, double learningRate) : base(lossDerivative, learningRate)
     { }
 
     public override void CalculateDelta(IOptimiserData optimiserData)

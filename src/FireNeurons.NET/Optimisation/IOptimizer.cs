@@ -1,15 +1,16 @@
-﻿using FireNeurons.NET.Objects;
+﻿namespace FireNeurons.NET.Optimisation;
+using Indexes;
+using Objects;
 
-namespace FireNeurons.NET.Optimisation;
 
 public abstract class IOptimiser
 {
-    public Func<Neuron, double, double> LossDerivative { get; init; }
+    public Func<Neuron, object?, object, double> LossDerivative { get; init; }
     public double LearningRate { get; init; }
 
     public abstract IOptimiserData DataInstance { get; }
 
-    public IOptimiser(Func<Neuron, double, double> lossDerivative, double learningRate)
+    public IOptimiser(Func<Neuron, object?, object, double> lossDerivative, double learningRate)
     {
         this.LearningRate = learningRate;
         this.LossDerivative = lossDerivative;

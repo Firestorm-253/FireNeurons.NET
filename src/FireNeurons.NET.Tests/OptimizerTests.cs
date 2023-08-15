@@ -2,6 +2,7 @@
 
 namespace FireNeurons.NET.Tests;
 
+using FireNeurons.NET.Indexes;
 using Objects;
 using Optimisation;
 using Optimisation.Optimisers;
@@ -16,13 +17,13 @@ public class OptimiserTests
     {
         const double learningRate = 0.0001;
 
-        var sgd_percentage = XOR_LossDecreasePercentage(new SGD(new Func<Neuron, double, double>((neuron, arg) =>
+        var sgd_percentage = XOR_LossDecreasePercentage(new SGD(new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
         {
-            return (arg - neuron.GetValue(true)); // MSE-Derivative
+            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         }), learningRate));
-        var adam_percentage = XOR_LossDecreasePercentage(new Adam(new Func<Neuron, double, double>((neuron, arg) =>
+        var adam_percentage = XOR_LossDecreasePercentage(new Adam(new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
         {
-            return (arg - neuron.GetValue(true)); // MSE-Derivative
+            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         })));
 
         Assert.IsTrue(adam_percentage > sgd_percentage);
@@ -56,10 +57,10 @@ public class OptimiserTests
 
         var trainingDataSet = new List<TrainingData>()
         {
-            new(new Data().Add(0, new double[] { 0, 0 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 0 })),
-            new(new Data().Add(0, new double[] { 1, 1 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 0 })),
-            new(new Data().Add(0, new double[] { 0, 1 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 1 })),
-            new(new Data().Add(0, new double[] { 1, 0 }), new Data().Add(outputNeuron.NeuronIndex.LayerIndex, new double[] { 1 })),
+            new(new Data().Add(0, new double[] { 0, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 0.0 } }))),
+            new(new Data().Add(0, new double[] { 1, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 0.0 } }))),
+            new(new Data().Add(0, new double[] { 0, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 1.0 } }))),
+            new(new Data().Add(0, new double[] { 1, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 1.0 } }))),
         };
 
         var resultsBefore = new Data[]
@@ -85,7 +86,7 @@ public class OptimiserTests
         return 1 - (mseAfter / mseBefore);
     }
 
-    private static double MSE(Data[] results, Data[] targets)
+    private static double MSE(Data[] results, Data<(object?, Dictionary<NeuronIndex, object>)>[] targets)
     {
         double loss = 0;
         for (int d = 0; d < results.Length; d++)
@@ -97,7 +98,7 @@ public class OptimiserTests
 
                 for (int n = 0; n < values.Length; n++)
                 {
-                    loss += (targetValues[n] - values[n]).Pow(2);
+                    loss += ((double)targetValues.Item2.ElementAt(n).Value - values[n]).Pow(2);
                 }
             }
         }
