@@ -24,24 +24,29 @@ public static class NeuralNetworkTrain
 
         network.Evaluate(trainingData.InputData, true, targetIndexes);
 
-        network.TrainTargetLayers(trainingData.LossDerivativeArgs);
+        network.TrainTargetLayers(trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons);
 
         network.TrainHiddenLayers(targetIndexes);
     }
 
-    private static void TrainTargetLayers(this NeuralNetwork network, Data lossDerivativeArgs)
+    private static void TrainTargetLayers(this NeuralNetwork network, Data lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
     {
         foreach (var lossArgsLayer in lossDerivativeArgs.DataLayers)
         {
-            network.TrainTargetLayer(network.Get(lossArgsLayer.Key), lossArgsLayer.Value);
+            network.TrainTargetLayer(network.Get(lossArgsLayer.Key), lossArgsLayer.Value, ignoreNeurons);
         }
     }
 
-    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, double[] lossArgs)
+    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, double[] lossArgs, NeuronIndex[] ignoreNeurons)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
             var targetNeuron = targetLayer.Neurons[n];
+
+            if (ignoreNeurons.Contains(targetNeuron.NeuronIndex))
+            {
+                continue;
+            }
 
             if (targetNeuron.DroppedOut)
             {
