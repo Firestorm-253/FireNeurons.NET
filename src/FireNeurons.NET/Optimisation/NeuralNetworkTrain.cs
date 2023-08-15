@@ -29,7 +29,7 @@ public static class NeuralNetworkTrain
         network.TrainHiddenLayers(targetIndexes);
     }
 
-    private static void TrainTargetLayers(this NeuralNetwork network, Data lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
+    private static void TrainTargetLayers(this NeuralNetwork network, Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
     {
         foreach (var lossArgsLayer in lossDerivativeArgs.DataLayers)
         {
@@ -37,7 +37,7 @@ public static class NeuralNetworkTrain
         }
     }
 
-    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, double[] lossArgs, NeuronIndex[] ignoreNeurons)
+    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, (object?, Dictionary<NeuronIndex, object>) lossArgs, NeuronIndex[] ignoreNeurons)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
@@ -55,7 +55,7 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossArgs[n]));
+            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossArgs.Item1, lossArgs.Item2[targetNeuron.NeuronIndex]));
             network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
         }
     }

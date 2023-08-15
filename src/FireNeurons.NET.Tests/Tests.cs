@@ -13,9 +13,9 @@ public class Tests
     [TestMethod]
     public void SaveLoad()
     {
-        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        var lossDerivative = new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
         {
-            return (arg - neuron.GetValue(true)); // MSE-Derivative
+            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
         var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
@@ -27,9 +27,9 @@ public class Tests
     [TestMethod]
     public void Clone()
     {
-        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        var lossDerivative = new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
         {
-            return (arg - neuron.GetValue(true)); // MSE-Derivative
+            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
         var model = new NeuralNetwork(new Adam(lossDerivative));
         model.Add(1, 0, Activation.Identity);
@@ -44,9 +44,9 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var lossDerivative = new Func<Neuron, double, double>((neuron, arg) =>
+        var lossDerivative = new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
         {
-            return (arg - neuron.GetValue(true)); // MSE-Derivative
+            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
         var optimiser = new SGD(lossDerivative, 0.02);
         var model = new NeuralNetwork(optimiser);

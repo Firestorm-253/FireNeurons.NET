@@ -2,22 +2,16 @@
 
 namespace FireNeurons.NET.Objects;
 
-public record Data
+public record Data : Data<double[]>
 {
-    public Dictionary<LayerIndex, double[]> DataLayers { get; init; } = new();
-
-    public Data() { }
+    public Data() : base()
+    { }
     public Data(params KeyValuePair<LayerIndex, double[]>[] dataLayers)
-    {
-        this.DataLayers = new Dictionary<LayerIndex, double[]>(dataLayers);
-    }
+        : base(dataLayers)
+    { }
 
-    public Data Add(LayerIndex layerIndex, params double[] values)
+    public override Data Add(LayerIndex layerIndex, params double[] values)
     {
-        if (values.Length == 0)
-        {
-            throw new ArgumentException("ERROR: Values can't be empty!");
-        }
         if (this.DataLayers.ContainsKey(layerIndex))
         {
             throw new ArgumentException("ERROR: DataLayer already exists!");
@@ -26,9 +20,34 @@ public record Data
         this.DataLayers.Add(layerIndex, values);
         return this;
     }
+}
+public record Data<T>
+{
+    public Dictionary<LayerIndex, T> DataLayers { get; init; } = new();
 
-    public double[] this[LayerIndex layerIndex] => this.DataLayers[layerIndex];
+    public Data()
+    { }
+    public Data(params KeyValuePair<LayerIndex, T>[] dataLayers)
+    {
+        this.DataLayers = new Dictionary<LayerIndex, T>(dataLayers);
+    }
 
-    public static implicit operator Dictionary<LayerIndex, double[]>(Data data)
+    public virtual Data<T> Add(LayerIndex layerIndex, T value)
+    {
+        if (this.DataLayers.ContainsKey(layerIndex))
+        {
+            throw new ArgumentException("ERROR: DataLayer already exists!");
+        }
+
+        this.DataLayers.Add(layerIndex, value);
+        return this;
+    }
+
+    public T this[LayerIndex layerIndex] => this.DataLayers[layerIndex];
+
+    public static implicit operator Dictionary<LayerIndex, T>(Data<T> data)
         => data.DataLayers;
+
+    //public static implicit operator Data<T>(Data data) => new(data);
+    //public static implicit operator Data(Data<T> data) => new Data(data);
 }
