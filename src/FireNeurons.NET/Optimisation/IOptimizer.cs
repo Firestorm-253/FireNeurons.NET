@@ -58,7 +58,7 @@ public abstract class IOptimiser
             double weightDecay_L2 = 2 * connection.Weight;
             double weightDecay = weightDecay_L1 + weightDecay_L2;
 
-            double adaptedGradient = gradient + (neuron.Options.WeightDecay * weightDecay);
+            double adaptedGradient = gradient - (neuron.Options.WeightDecay * weightDecay);
             connection.OptimiserData.Gradient = adaptedGradient * connection.InputNeuron.GetValue(true);
         }
     }
