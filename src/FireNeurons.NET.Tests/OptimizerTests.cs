@@ -41,12 +41,12 @@ public class OptimiserTests
         model.Add(2, 0, new Options() { Activation = Activation.Identity, Dropout = 0.00 });
 
         //# HiddenLayers
-        model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.01 }, 0);
-        model.Add(100, 2, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.01 }, 1);
-        model.Add(100, 3, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.01 }, 2);
+        model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 0);
+        model.Add(100, 2, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 1);
+        model.Add(100, 3, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 2);
 
         //# OutputLayers
-        model.Add(1, 4, new Options() { Activation = Activation.Sigmoid, WeightDecay = 0.01 }, 3);
+        model.Add(1, 4, new Options() { Activation = Activation.Sigmoid, WeightDecay = 0.001 }, 3);
 
         //# Compile
         model.Randomize();
