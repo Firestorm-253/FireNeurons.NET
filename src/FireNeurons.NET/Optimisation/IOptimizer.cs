@@ -1,5 +1,7 @@
-﻿namespace FireNeurons.NET.Optimisation;
-using Indexes;
+﻿using FireMath.NET;
+
+namespace FireNeurons.NET.Optimisation;
+
 using Objects;
 
 
