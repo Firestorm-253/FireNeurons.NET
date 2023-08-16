@@ -1,5 +1,7 @@
-﻿namespace FireNeurons.NET.Optimisation;
-using Indexes;
+﻿using FireMath.NET;
+
+namespace FireNeurons.NET.Optimisation;
+
 using Objects;
 
 
@@ -52,7 +54,12 @@ public abstract class IOptimiser
 
         foreach (var connection in neuron.Connections)
         {
-            connection.OptimiserData.Gradient = gradient * connection.InputNeuron.GetValue(true);
+            double weightDecay_L1 = connection.Weight / connection.Weight.Abs();
+            double weightDecay_L2 = 2 * connection.Weight;
+            double weightDecay = weightDecay_L1 + weightDecay_L2;
+
+            double adaptedGradient = gradient + (neuron.Options.WeightDecay * weightDecay);
+            connection.OptimiserData.Gradient = adaptedGradient * connection.InputNeuron.GetValue(true);
         }
     }
 }
