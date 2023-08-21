@@ -1,0 +1,1 @@
+﻿- decoupled weight decay (adam probably needs special treatment) https://arxiv.org/pdf/1711.05101.pdf
