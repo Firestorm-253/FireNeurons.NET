@@ -114,14 +114,14 @@ public class Neuron
         return this._value = this.Blank.Activate(this.Options.Activation);
     }
 
-    public void Feed(double blank)
+    public void Feed(double blank, bool isTraining)
     {
         if (this.IsWorking)
         {
             throw new Exception("ERROR: Can't feed a working neuron!");
         }
 
-        this.CalculationNeeded = false;
+        this.GetValue(isTraining);
 
         this.Set(blank);
     }
