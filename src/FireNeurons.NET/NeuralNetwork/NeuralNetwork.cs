@@ -109,6 +109,10 @@ public partial class NeuralNetwork
         var dict = new Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>>();
         foreach (var layer in this.Layers)
         {
+            if (!layer.Neurons.Any(x => x.Connections.Any()))
+            {
+                continue;
+            }
             dict.Add(layer.LayerIndex, layer.GetVisualization());
         }
         return dict;
