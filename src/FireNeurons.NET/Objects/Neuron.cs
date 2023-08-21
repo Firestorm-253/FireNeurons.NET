@@ -87,6 +87,10 @@ public class Neuron
         if (isTraining)
         {
             this.DroppedOut = (GlobalRandom.NextDouble() < this.Options.Dropout);
+            if (this.DroppedOut)
+            {
+                return this._value = 0;
+            }
         }
 
         if (!this.IsWorking)
