@@ -50,7 +50,7 @@ public partial class NeuralNetwork
         }
     }
 
-    private void Feed(Data data)
+    private void Feed(Data data, bool isTraining)
     {
         foreach (var ent in data.DataLayers)
         {
@@ -58,7 +58,7 @@ public partial class NeuralNetwork
 
             for (int n = 0; n < layer.Neurons.Count; n++)
             {
-                layer.Neurons[n].Feed(ent.Value[n]);
+                layer.Neurons[n].Feed(ent.Value[n], isTraining);
             }
         }
     }
@@ -70,7 +70,7 @@ public partial class NeuralNetwork
             layer.Invalidate();
         }
 
-        this.Feed(data);
+        this.Feed(data, isTraining);
 
         foreach (var layer in this.Layers)
         {
