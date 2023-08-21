@@ -81,6 +81,16 @@ public class Layer
         }
     }
 
+    public Dictionary<NeuronIndex, double[]> GetVisualization()
+    {
+        var dict = new Dictionary<NeuronIndex, double[]>();
+        foreach (var neuron in this.Neurons)
+        {
+            dict.Add(neuron.NeuronIndex, neuron.GetVisualization());
+        }
+        return dict;
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is not Layer layer)
