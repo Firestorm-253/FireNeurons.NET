@@ -134,6 +134,14 @@ public class Neuron
         this.DroppedOut = false;
     }
 
+    public double[] GetVisualization()
+    {
+        var offset = -this.Connections.Min(x => x.Weight);
+        var max = this.Connections.Max(x => x.Weight) + offset;
+
+        return this.Connections.Select(x => (x.Weight + offset) / max).ToArray();
+    }
+
     public override bool Equals(object? obj)
     {
         if (obj is not Neuron neuron)

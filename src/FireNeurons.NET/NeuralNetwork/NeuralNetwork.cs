@@ -104,6 +104,16 @@ public partial class NeuralNetwork
         return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
     }
 
+    public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization()
+    {
+        var dict = new Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>>();
+        foreach (var layer in this.Layers)
+        {
+            dict.Add(layer.LayerIndex, layer.GetVisualization());
+        }
+        return dict;
+    }
+
     public override bool Equals(object? obj)
     {
 #pragma warning disable IDE0011 // Geschweifte Klammern hinzufügen
