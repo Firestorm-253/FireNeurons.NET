@@ -37,7 +37,7 @@ public class OptimiserTests
         var model = new NeuralNetwork();
 
         //# InputLayers
-        model.Add(2, 0, new Options() { Activation = Activation.Identity, Dropout = 0.00 });
+        model.Add(2, 0, new Options() { Activation = Activation.Identity, UseBias = false, Dropout = 0.00 });
 
         //# HiddenLayers
         model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 0);
@@ -70,7 +70,7 @@ public class OptimiserTests
             model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.Index.LayerIndex),
         };
 
-        model.Train(optimiser, trainingDataSet, epochs: 200);
+        model.Train(optimiser, trainingDataSet, miniBatchSize: 2, epochs: 200);
 
         var resultsAfter = new Data[]
         {

@@ -11,8 +11,8 @@ public class SGD : IOptimiser
 
     public override void ApplyGradient(IOptimiserData optimiserData)
     {
-        optimiserData.Delta = this.LearningRate * optimiserData.Gradient;
-
         base.ApplyGradient(optimiserData);
+
+        optimiserData.Delta = this.LearningRate * optimiserData.FinalGradient;
     }
 }

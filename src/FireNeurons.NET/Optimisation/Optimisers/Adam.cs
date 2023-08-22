@@ -3,7 +3,7 @@
 namespace FireNeurons.NET.Optimisation.Optimisers;
 using Objects;
 
-public class Adam : SGD
+public class Adam : IOptimiser
 {
     public override IOptimiserData DataInstance => new AdamData();
 
@@ -19,13 +19,15 @@ public class Adam : SGD
 
     public override void ApplyGradient(IOptimiserData optimiserData)
     {
+        base.ApplyGradient(optimiserData);
+
         if (optimiserData is not AdamData adamData)
         {
             throw new Exception("ERROR: Wrong optimiserData-type!");
         }
 
-        adamData.Momentum = adamData.Momentum.Discount(adamData.Gradient, this.Beta_1);
-        adamData.MomentumSquared = adamData.MomentumSquared.Discount(adamData.Gradient.Pow(), this.Beta_2);
+        adamData.Momentum = adamData.Momentum.Discount(adamData.FinalGradient, this.Beta_1);
+        adamData.MomentumSquared = adamData.MomentumSquared.Discount(adamData.FinalGradient.Pow(), this.Beta_2);
 
         var momentum_fixed = adamData.Momentum.FixBias(this.Beta_1, adamData.TimeStep);
         var momentumSquared_fixed = adamData.MomentumSquared.FixBias(this.Beta_2, adamData.TimeStep);
@@ -34,8 +36,6 @@ public class Adam : SGD
         adamData.Delta = this.LearningRate * rawDelta;
 
         adamData.TimeStep++;
-
-        base.ApplyGradient(optimiserData);
     }
 }
 
