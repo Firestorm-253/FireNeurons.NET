@@ -1,18 +1,15 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET;
 
 public partial class NeuralNetwork
 {
     public Dictionary<LayerIndex, Layer> Layers { get; init; }
-    public IOptimiser Optimiser { get; init; }
 
-    public NeuralNetwork(IOptimiser optimiser)
+    public NeuralNetwork()
     {
         this.Layers = new Dictionary<LayerIndex, Layer>();
-        this.Optimiser = optimiser;
     }
 
     public void Add(int neurons,
@@ -25,7 +22,7 @@ public partial class NeuralNetwork
             throw new Exception("ERROR: LayerIndex must be unique!");
         }
 
-        var layer = new Layer(index, neurons, options, this.Optimiser);
+        var layer = new Layer(index, neurons, options);
         
         foreach (var inputLayerIndex in inputs)
         {
@@ -98,7 +95,7 @@ public partial class NeuralNetwork
     public Neuron Get(NeuronIndex neuronIndex)
     {
         var layer = this.Layers[neuronIndex.LayerIndex];
-        return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
+        return layer.Neurons.First(x => x.Index.Equals(neuronIndex));
     }
 
     public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization()
@@ -110,7 +107,7 @@ public partial class NeuralNetwork
             {
                 continue;
             }
-            dict.Add(layer.LayerIndex, layer.GetVisualization());
+            dict.Add(layer.Index, layer.GetVisualization());
         }
         return dict;
     }

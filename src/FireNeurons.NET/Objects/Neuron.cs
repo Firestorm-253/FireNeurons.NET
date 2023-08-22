@@ -1,22 +1,18 @@
 ﻿using FireNeurons.NET.Dto;
 using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET.Objects;
 
 public class Neuron
 {
-    public NeuronIndex NeuronIndex { get; init; }
+    public NeuronIndex Index { get; init; }
     public Options Options { get; init; }
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
     public List<Connection> OutgoingConnections { get; init; } = new();
 
-    public IOptimiser Optimiser { get; init; }
-
     public double Bias { get; set; }
 
-    public IOptimiserData OptimiserData { get; set; } = null!; // for Neuron & Bias
     public double Blank { get; set; }
 
     public bool CalculationNeeded { get; set; } = true;
@@ -30,37 +26,30 @@ public class Neuron
     public bool IsWorking => (this.Connections.Count != 0) && !this.DroppedOut;
     public bool DroppedOut { get; private set; } = false;
 
-    public Neuron(NeuronIndex neuronIndex,
+    public Neuron(NeuronIndex index,
                   Options options,
-                  Layer layer,
-                  IOptimiser optimiser)
+                  Layer layer)
     {
-        this.NeuronIndex = neuronIndex;
+        this.Index = index;
         this.Options = options;
         this.Layer = layer;
-        this.Optimiser = optimiser;
-
-        this.OptimiserData = this.Optimiser.DataInstance;
     }
     /// <summary>Deserialization</summary>
     public Neuron(NeuronDto neuronDto, Layer layer, NeuralNetwork network)
     {
-        this.NeuronIndex = neuronDto.NeuronIndex;
+        this.Index = neuronDto.Index;
         this.Options = neuronDto.Options;
         this.Layer = layer;
-        this.Optimiser = network.Optimiser;
 
         foreach (var connectionDto in neuronDto.Connections)
         {
             this.Connections.Add(new Connection(connectionDto, this, network));
         }
-
-        this.OptimiserData = this.Optimiser.DataInstance;
     }
 
     public void Connect(Neuron input)
     {
-        this.Connections.Add(new Connection(input, this, this.Optimiser));
+        this.Connections.Add(new Connection(new ConnectionIndex(this.Connections.Count, this.Index), input, this));
     }
 
     public void Randomize()
@@ -153,10 +142,10 @@ public class Neuron
             return false;
         }
 
-        return this.NeuronIndex.Equals(neuron.NeuronIndex);
+        return this.Index.Equals(neuron.Index);
     }
     public override int GetHashCode()
     {
-        return this.NeuronIndex.GetHashCode();
+        return this.Index.GetHashCode();
     }
 }

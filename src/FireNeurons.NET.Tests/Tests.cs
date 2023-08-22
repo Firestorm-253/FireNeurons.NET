@@ -1,9 +1,7 @@
 using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
-
 using Objects;
-using Optimisation.Optimisers;
 
 [TestClass]
 public class Tests
@@ -17,11 +15,11 @@ public class Tests
         {
             return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
-        var model = new NeuralNetwork(new Adam(lossDerivative));
+        var model = new NeuralNetwork();
         model.Add(1, 0, Activation.Identity);
         model.Save("models\\m1.abgsdfgr", SaveType.Binary);
 
-        var loaded = new NeuralNetwork("models\\m1.nn", new Adam(lossDerivative));
+        var loaded = new NeuralNetwork("models\\m1.nn");
     }
 
     [TestMethod]
@@ -31,7 +29,7 @@ public class Tests
         {
             return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
-        var model = new NeuralNetwork(new Adam(lossDerivative));
+        var model = new NeuralNetwork();
         model.Add(1, 0, Activation.Identity);
         
         var clone = model.Clone();
@@ -44,12 +42,7 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var lossDerivative = new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
-        {
-            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
-        });
-        var optimiser = new SGD(lossDerivative, 0.02);
-        var model = new NeuralNetwork(optimiser);
+        var model = new NeuralNetwork();
 
         //# InputLayers
         model.Add(1, 0, Activation.Identity);
@@ -72,42 +65,6 @@ public class Tests
 
         var results = model.Evaluate(data, false, 3, 4);
     }
-
-    //[TestMethod]
-    //public void SaveLoad()
-    //{
-    //    //# Seed Randomizer
-    //    GlobalRandom = new Random(randomSeed);
-
-    //    //# Initialize
-    //    var optimiser = new Optimisation.SGD(0.02);
-    //    var model = new NeuralNetwork(optimiser);
-
-    //    //# InputLayers
-    //    model.Add(6, 0, Activation.Sigmoid);
-    //    model.Add(6, 1, Activation.Sigmoid);
-
-    //    //# HiddenLayers
-    //    model.Add(20, 2, Activation.LeakyRelu, 0, 1);
-    //    model.Add(20, 3, Activation.LeakyRelu, 2);
-
-    //    //# OutputLayers
-    //    model.Add(10, 4, Activation.Sigmoid, 3);
-
-    //    //# Compile
-    //    model.Randomize();
-
-    //    //# Test
-    //    const string name = "test-network";
-    //    model.Save(name, SaveType.Binary);
-    //    model.Save(name, SaveType.Json);
-
-    //    var binaryLoaded = new NeuralNetwork($"{name}.nn", optimiser);
-    //    var jsonLoaded = new NeuralNetwork($"{name}.json", optimiser);
-
-    //    Assert.AreEqual(binaryLoaded, jsonLoaded);
-    //    Assert.AreEqual(model, binaryLoaded);
-    //}
 
     [TestMethod]
     public void SwitchSpeedTest()
