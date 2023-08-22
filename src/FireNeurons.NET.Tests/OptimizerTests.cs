@@ -1,8 +1,7 @@
 ﻿using FireMath.NET;
 
 namespace FireNeurons.NET.Tests;
-
-using FireNeurons.NET.Indexes;
+using Indexes;
 using Objects;
 using Optimisation;
 using Optimisation.Optimisers;

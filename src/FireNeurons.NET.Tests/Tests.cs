@@ -1,9 +1,7 @@
 using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
-
 using Objects;
-using Optimisation.Optimisers;
 
 [TestClass]
 public class Tests

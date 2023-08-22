@@ -1,6 +1,5 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimisation.Optimisers;
 
 namespace FireNeurons.NET.Optimisation;
 
