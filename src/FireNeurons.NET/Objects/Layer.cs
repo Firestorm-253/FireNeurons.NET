@@ -1,31 +1,27 @@
 ﻿using FireNeurons.NET.Dto;
 using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET.Objects;
 
 public class Layer
 {
     public Options Options { get; init; }
-    public LayerIndex LayerIndex { get; init; }
+    public LayerIndex Index { get; init; }
     public List<Neuron> Neurons { get; init; } = new();
-    public IOptimiser Optimiser { get; init; } = null!;
 
 
-    public Layer(LayerIndex layerIndex, int neurons, Options options, IOptimiser optimiser)
+    public Layer(LayerIndex index, int neurons, Options options)
     {
-        this.LayerIndex = layerIndex;
+        this.Index = index;
         this.Options = options;
-        this.Optimiser = optimiser;
 
         this.AddNeurons(neurons);
     }
     /// <summary>Deserialization</summary>
     public Layer(LayerDto layerDto, NeuralNetwork network)
     {
-        this.LayerIndex = layerDto.LayerIndex;
+        this.Index = layerDto.Index;
         this.Options = layerDto.Options;
-        this.Optimiser = network.Optimiser;
 
         foreach (var neuronDto in layerDto.Neurons)
         {
@@ -37,7 +33,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Options, this, this.Optimiser));
+            this.Neurons.Add(new Neuron((n, this.Index), this.Options, this));
         }
     }
 
@@ -81,7 +77,7 @@ public class Layer
         var dict = new Dictionary<NeuronIndex, double[]>();
         foreach (var neuron in this.Neurons)
         {
-            dict.Add(neuron.NeuronIndex, neuron.GetVisualization());
+            dict.Add(neuron.Index, neuron.GetVisualization());
         }
         return dict;
     }
@@ -93,10 +89,10 @@ public class Layer
             return false;
         }
 
-        return this.LayerIndex.Equals(layer.LayerIndex);
+        return this.Index.Equals(layer.Index);
     }
     public override int GetHashCode()
     {
-        return this.LayerIndex.GetHashCode();
+        return this.Index.GetHashCode();
     }
 }

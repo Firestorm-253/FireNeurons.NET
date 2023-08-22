@@ -1,18 +1,15 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
-using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET;
 
 public partial class NeuralNetwork
 {
-    public HashSet<Layer> Layers { get; init; }
-    public IOptimiser Optimiser { get; init; }
+    public Dictionary<LayerIndex, Layer> Layers { get; init; }
 
-    public NeuralNetwork(IOptimiser optimiser)
+    public NeuralNetwork()
     {
-        this.Layers = new HashSet<Layer>(new LayerEqualityComparer());
-        this.Optimiser = optimiser;
+        this.Layers = new Dictionary<LayerIndex, Layer>();
     }
 
     public void Add(int neurons,
@@ -20,19 +17,20 @@ public partial class NeuralNetwork
                     Options options,
                     params LayerIndex[] inputs)
     {
-        var layer = new Layer(index, neurons, options, this.Optimiser);
-        
-        foreach (var inputLayerIndex in inputs)
-        {
-            var inputLayer = this.Get(inputLayerIndex);
-            layer.Connect(inputLayer);
-        }
-        
-        if (this.Layers.Contains(layer))
+        if (this.Layers.ContainsKey(index))
         {
             throw new Exception("ERROR: LayerIndex must be unique!");
         }
-        this.Layers.Add(layer);
+
+        var layer = new Layer(index, neurons, options);
+        
+        foreach (var inputLayerIndex in inputs)
+        {
+            var inputLayer = this.Layers[inputLayerIndex];
+            layer.Connect(inputLayer);
+        }
+        
+        this.Layers.Add(index, layer);
     }
     public void Add(int neurons,
                     LayerIndex index,
@@ -44,7 +42,7 @@ public partial class NeuralNetwork
 
     public void Randomize()
     {
-        foreach (var layer in this.Layers)
+        foreach (var (_, layer) in this.Layers)
         {
             layer.Randomize();
         }
@@ -52,27 +50,27 @@ public partial class NeuralNetwork
 
     private void Feed(Data data, bool isTraining)
     {
-        foreach (var ent in data.DataLayers)
+        foreach (var (layerIndex, values) in data.DataLayers)
         {
-            var layer = this.Get(ent.Key);
+            var layer = this.Layers[layerIndex];
 
             for (int n = 0; n < layer.Neurons.Count; n++)
             {
-                layer.Neurons[n].Feed(ent.Value[n], isTraining);
+                layer.Neurons[n].Feed(values[n], isTraining);
             }
         }
     }
 
     public Data Evaluate(Data data, bool isTraining = false, params LayerIndex[] outputLayers)
     {
-        foreach (var layer in this.Layers)
+        foreach (var (_, layer) in this.Layers)
         {
             layer.Invalidate();
         }
 
         this.Feed(data, isTraining);
 
-        foreach (var layer in this.Layers)
+        foreach (var (_, layer) in this.Layers)
         {
             layer.Calculate(isTraining);
         }
@@ -80,7 +78,7 @@ public partial class NeuralNetwork
         var outputs = new KeyValuePair<LayerIndex, double[]>[outputLayers.Length];
         for (int l = 0; l < outputLayers.Length; l++)
         {
-            var outputLayer = this.Get(outputLayers[l]);
+            var outputLayer = this.Layers[outputLayers[l]];
             var outputData = new double[outputLayer.Neurons.Count];
 
             for (int n = 0; n < outputLayer.Neurons.Count; n++)
@@ -94,26 +92,22 @@ public partial class NeuralNetwork
         return new(outputs);
     }
 
-    public Layer Get(LayerIndex layerIndex)
-    {
-        return this.Layers.First(x => x.LayerIndex.Equals(layerIndex));
-    }
     public Neuron Get(NeuronIndex neuronIndex)
     {
-        var layer = this.Get(neuronIndex.LayerIndex);
-        return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
+        var layer = this.Layers[neuronIndex.LayerIndex];
+        return layer.Neurons.First(x => x.Index.Equals(neuronIndex));
     }
 
     public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization()
     {
         var dict = new Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>>();
-        foreach (var layer in this.Layers)
+        foreach (var (_, layer) in this.Layers)
         {
             if (!layer.Neurons.Any(x => x.Connections.Any()))
             {
                 continue;
             }
-            dict.Add(layer.LayerIndex, layer.GetVisualization());
+            dict.Add(layer.Index, layer.GetVisualization());
         }
         return dict;
     }
@@ -126,8 +120,8 @@ public partial class NeuralNetwork
 
         for (int l = 0; l < this.Layers.Count; l++)
         {
-            var layer = this.Layers.ElementAt(l);
-            var checkLayer = check.Layers.ElementAt(l);
+            var (_, layer) = this.Layers.ElementAt(l);
+            var (_, checkLayer) = check.Layers.ElementAt(l);
             if (!layer.Equals(checkLayer)) return false;
             if (layer.Neurons.Count != checkLayer.Neurons.Count) return false;
 

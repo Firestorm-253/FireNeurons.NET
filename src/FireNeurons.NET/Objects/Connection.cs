@@ -1,36 +1,34 @@
-﻿using FireNeurons.NET.Dto;
-using FireNeurons.NET.Optimisation;
-
-namespace FireNeurons.NET.Objects;
+﻿namespace FireNeurons.NET.Objects;
+using Dto;
+using Indexes;
 
 public class Connection
 {
+    public ConnectionIndex Index { get; init; }
+
     public Neuron InputNeuron { get; init; }
     public Neuron OutputNeuron { get; init; }
 
-    public IOptimiser Optimiser { get; init; }
-
     public double Weight { get; set; }
-    public IOptimiserData OptimiserData { get; set; } = null!; // for Weight
 
-    public Connection(Neuron inputNeuron, Neuron outputNeuron, IOptimiser optimiser)
+    public Connection(ConnectionIndex index,
+                      Neuron inputNeuron,
+                      Neuron outputNeuron)
     {
+        this.Index = index;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = inputNeuron;
-        this.Optimiser = optimiser;
 
-        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
     /// <summary>Deserialization</summary>
     public Connection(ConnectionDto connectionDto, Neuron outputNeuron, NeuralNetwork network)
     {
+        this.Index = connectionDto.Index;
         this.Weight = connectionDto.Weight;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = network.Get(connectionDto.InputNeuron);
-        this.Optimiser = network.Optimiser;
 
-        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
 

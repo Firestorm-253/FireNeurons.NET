@@ -1,16 +1,18 @@
-﻿using FireNeurons.NET.Objects;
-
-namespace FireNeurons.NET.Optimisation.Optimisers;
+﻿namespace FireNeurons.NET.Optimisation.Optimisers;
+using Objects;
 
 public class SGD : IOptimiser
 {
     public override IOptimiserData DataInstance => new IOptimiserData();
 
-    public SGD(Func<Neuron, object?, object, double> lossDerivative, double learningRate) : base(lossDerivative, learningRate)
+    public SGD(Func<Neuron, object?, object, double> lossDerivative, double learningRate)
+        : base(lossDerivative, learningRate)
     { }
 
-    public override void CalculateDelta(IOptimiserData optimiserData)
+    public override void ApplyGradient(IOptimiserData optimiserData)
     {
         optimiserData.Delta = this.LearningRate * optimiserData.Gradient;
+
+        base.ApplyGradient(optimiserData);
     }
 }
