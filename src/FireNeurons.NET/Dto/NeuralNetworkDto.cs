@@ -7,7 +7,7 @@ public record NeuralNetworkDto
     public NeuralNetworkDto() { }
     public NeuralNetworkDto(NeuralNetwork network)
     {
-        foreach (var layer in network.Layers)
+        foreach (var (_, layer) in network.Layers)
         {
             this.Layers.Add(new LayerDto(layer));
         }

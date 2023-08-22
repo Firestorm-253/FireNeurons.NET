@@ -36,13 +36,13 @@ public static class NeuralNetworkTrain
 
     private static void TrainTargetLayers(this NeuralNetwork network, Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
     {
-        foreach (var lossArgsLayer in lossDerivativeArgs.DataLayers)
+        foreach (var (layerIndex, data) in lossDerivativeArgs.DataLayers)
         {
-            network.TrainTargetLayer(network.Get(lossArgsLayer.Key), lossArgsLayer.Value, ignoreNeurons);
+            network.TrainTargetLayer(network.Layers[layerIndex], data, ignoreNeurons);
         }
     }
 
-    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, (object?, Dictionary<NeuronIndex, object>) lossArgs, NeuronIndex[] ignoreNeurons)
+    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, (object?, Dictionary<NeuronIndex, object>) lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
@@ -60,16 +60,16 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossArgs.Item1, lossArgs.Item2[targetNeuron.NeuronIndex]));
+            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.NeuronIndex]));
             network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
         }
     }
 
     private static void TrainHiddenLayers(this NeuralNetwork network, LayerIndex[] targetIndexes)
     {
-        foreach (var layer in network.Layers.OrderByDescending(x => x.LayerIndex.Index))
+        foreach (var (layerIndex, layer) in network.Layers.OrderByDescending(x => x.Key.Index))
         {
-            if (targetIndexes.Contains(layer.LayerIndex))
+            if (targetIndexes.Contains(layerIndex))
             {
                 continue;
             }

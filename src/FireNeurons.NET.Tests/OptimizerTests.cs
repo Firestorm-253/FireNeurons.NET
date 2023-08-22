@@ -53,7 +53,7 @@ public class OptimiserTests
 
 
         //# Test
-        var outputNeuron = model.Layers.Last().Neurons.First();
+        var outputNeuron = model.Layers.Last().Value.Neurons.First();
 
         var trainingDataSet = new List<TrainingData>()
         {
