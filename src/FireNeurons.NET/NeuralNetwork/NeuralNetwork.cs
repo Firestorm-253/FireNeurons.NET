@@ -95,7 +95,7 @@ public partial class NeuralNetwork
     public Neuron Get(NeuronIndex neuronIndex)
     {
         var layer = this.Layers[neuronIndex.LayerIndex];
-        return layer.Neurons.First(x => x.NeuronIndex.Equals(neuronIndex));
+        return layer.Neurons.First(x => x.Index.Equals(neuronIndex));
     }
 
     public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization()

@@ -77,7 +77,7 @@ public class Layer
         var dict = new Dictionary<NeuronIndex, double[]>();
         foreach (var neuron in this.Neurons)
         {
-            dict.Add(neuron.NeuronIndex, neuron.GetVisualization());
+            dict.Add(neuron.Index, neuron.GetVisualization());
         }
         return dict;
     }

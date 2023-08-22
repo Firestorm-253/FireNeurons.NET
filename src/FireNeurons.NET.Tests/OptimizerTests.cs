@@ -57,28 +57,28 @@ public class OptimiserTests
 
         var trainingDataSet = new List<TrainingData>()
         {
-            new(new Data().Add(0, new double[] { 0, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 0.0 } }))),
-            new(new Data().Add(0, new double[] { 1, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 0.0 } }))),
-            new(new Data().Add(0, new double[] { 0, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 1.0 } }))),
-            new(new Data().Add(0, new double[] { 1, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.NeuronIndex.LayerIndex, (null, new() { { outputNeuron.NeuronIndex, 1.0 } }))),
+            new(new Data().Add(0, new double[] { 0, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.Index.LayerIndex, (null, new() { { outputNeuron.Index, 0.0 } }))),
+            new(new Data().Add(0, new double[] { 1, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.Index.LayerIndex, (null, new() { { outputNeuron.Index, 0.0 } }))),
+            new(new Data().Add(0, new double[] { 0, 1 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.Index.LayerIndex, (null, new() { { outputNeuron.Index, 1.0 } }))),
+            new(new Data().Add(0, new double[] { 1, 0 }), new Data<(object?, Dictionary<NeuronIndex, object>)>().Add(outputNeuron.Index.LayerIndex, (null, new() { { outputNeuron.Index, 1.0 } }))),
         };
 
         var resultsBefore = new Data[]
         {
-            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.Index.LayerIndex),
         };
 
         model.Train(trainingDataSet, epochs: 200);
 
         var resultsAfter = new Data[]
         {
-            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
-            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
+            model.Evaluate(trainingDataSet[0].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[1].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[2].InputData, false, outputNeuron.Index.LayerIndex),
+            model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.Index.LayerIndex),
         };
 
         double mseBefore = MSE(resultsBefore, trainingDataSet.Select(x => x.LossDerivativeArgs).ToArray());

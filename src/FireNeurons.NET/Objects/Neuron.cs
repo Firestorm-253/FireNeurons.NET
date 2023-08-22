@@ -5,7 +5,7 @@ namespace FireNeurons.NET.Objects;
 
 public class Neuron
 {
-    public NeuronIndex NeuronIndex { get; init; }
+    public NeuronIndex Index { get; init; }
     public Options Options { get; init; }
     public Layer Layer { get; init; }
     public List<Connection> Connections { get; init; } = new();
@@ -26,18 +26,18 @@ public class Neuron
     public bool IsWorking => (this.Connections.Count != 0) && !this.DroppedOut;
     public bool DroppedOut { get; private set; } = false;
 
-    public Neuron(NeuronIndex neuronIndex,
+    public Neuron(NeuronIndex index,
                   Options options,
                   Layer layer)
     {
-        this.NeuronIndex = neuronIndex;
+        this.Index = index;
         this.Options = options;
         this.Layer = layer;
     }
     /// <summary>Deserialization</summary>
     public Neuron(NeuronDto neuronDto, Layer layer, NeuralNetwork network)
     {
-        this.NeuronIndex = neuronDto.NeuronIndex;
+        this.Index = neuronDto.Index;
         this.Options = neuronDto.Options;
         this.Layer = layer;
 
@@ -49,7 +49,7 @@ public class Neuron
 
     public void Connect(Neuron input)
     {
-        this.Connections.Add(new Connection(new ConnectionIndex(this.Connections.Count, this.NeuronIndex), input, this));
+        this.Connections.Add(new Connection(new ConnectionIndex(this.Connections.Count, this.Index), input, this));
     }
 
     public void Randomize()
@@ -142,10 +142,10 @@ public class Neuron
             return false;
         }
 
-        return this.NeuronIndex.Equals(neuron.NeuronIndex);
+        return this.Index.Equals(neuron.Index);
     }
     public override int GetHashCode()
     {
-        return this.NeuronIndex.GetHashCode();
+        return this.Index.GetHashCode();
     }
 }

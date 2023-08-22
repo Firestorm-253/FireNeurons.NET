@@ -15,7 +15,7 @@ public record ConnectionDto
     {
         this.Index = connection.Index;
         this.Weight = connection.Weight;
-        this.InputNeuron = connection.InputNeuron.NeuronIndex;
-        this.OutputNeuron = connection.OutputNeuron.NeuronIndex;
+        this.InputNeuron = connection.InputNeuron.Index;
+        this.OutputNeuron = connection.OutputNeuron.Index;
     }
 }

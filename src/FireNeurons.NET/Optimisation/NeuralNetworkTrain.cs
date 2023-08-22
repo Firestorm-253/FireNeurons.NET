@@ -48,7 +48,7 @@ public static class NeuralNetworkTrain
         {
             var targetNeuron = targetLayer.Neurons[n];
 
-            if (ignoreNeurons.Contains(targetNeuron.NeuronIndex))
+            if (ignoreNeurons.Contains(targetNeuron.Index))
             {
                 continue;
             }
@@ -60,7 +60,7 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.NeuronIndex]));
+            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.Index]));
             network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
         }
     }
