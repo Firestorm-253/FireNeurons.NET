@@ -1,7 +1,6 @@
 ﻿namespace FireNeurons.NET.Objects;
 using Dto;
 using Indexes;
-using Optimisation;
 
 public class Connection
 {
