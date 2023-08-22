@@ -1,6 +1,5 @@
 ﻿using FireNeurons.NET.Dto;
 using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Optimisation;
 
 namespace FireNeurons.NET.Objects;
 
@@ -9,14 +8,12 @@ public class Layer
     public Options Options { get; init; }
     public LayerIndex LayerIndex { get; init; }
     public List<Neuron> Neurons { get; init; } = new();
-    public IOptimiser Optimiser { get; init; } = null!;
 
 
-    public Layer(LayerIndex layerIndex, int neurons, Options options, IOptimiser optimiser)
+    public Layer(LayerIndex layerIndex, int neurons, Options options)
     {
         this.LayerIndex = layerIndex;
         this.Options = options;
-        this.Optimiser = optimiser;
 
         this.AddNeurons(neurons);
     }
@@ -25,7 +22,6 @@ public class Layer
     {
         this.LayerIndex = layerDto.LayerIndex;
         this.Options = layerDto.Options;
-        this.Optimiser = network.Optimiser;
 
         foreach (var neuronDto in layerDto.Neurons)
         {
@@ -37,7 +33,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Options, this, this.Optimiser));
+            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Options, this));
         }
     }
 

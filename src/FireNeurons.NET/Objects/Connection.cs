@@ -10,22 +10,16 @@ public class Connection
     public Neuron InputNeuron { get; init; }
     public Neuron OutputNeuron { get; init; }
 
-    public IOptimiser Optimiser { get; init; }
-
     public double Weight { get; set; }
-    public IOptimiserData OptimiserData { get; set; } = null!; // for Weight
 
     public Connection(ConnectionIndex index,
                       Neuron inputNeuron,
-                      Neuron outputNeuron,
-                      IOptimiser optimiser)
+                      Neuron outputNeuron)
     {
         this.Index = index;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = inputNeuron;
-        this.Optimiser = optimiser;
 
-        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
     /// <summary>Deserialization</summary>
@@ -35,9 +29,7 @@ public class Connection
         this.Weight = connectionDto.Weight;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = network.Get(connectionDto.InputNeuron);
-        this.Optimiser = network.Optimiser;
 
-        this.OptimiserData = this.Optimiser.DataInstance;
         this.InputNeuron.OutgoingConnections.Add(this);
     }
 
