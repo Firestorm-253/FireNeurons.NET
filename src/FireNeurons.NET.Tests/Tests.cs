@@ -17,11 +17,11 @@ public class Tests
         {
             return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
-        var model = new NeuralNetwork(new Adam(lossDerivative));
+        var model = new NeuralNetwork();
         model.Add(1, 0, Activation.Identity);
         model.Save("models\\m1.abgsdfgr", SaveType.Binary);
 
-        var loaded = new NeuralNetwork("models\\m1.nn", new Adam(lossDerivative));
+        var loaded = new NeuralNetwork("models\\m1.nn");
     }
 
     [TestMethod]
@@ -31,7 +31,7 @@ public class Tests
         {
             return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
         });
-        var model = new NeuralNetwork(new Adam(lossDerivative));
+        var model = new NeuralNetwork();
         model.Add(1, 0, Activation.Identity);
         
         var clone = model.Clone();
@@ -44,12 +44,7 @@ public class Tests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var lossDerivative = new Func<Neuron, object?, object, double>((neuron, obj_global, obj_local) =>
-        {
-            return ((double)obj_local - neuron.GetValue(true)); // MSE-Derivative
-        });
-        var optimiser = new SGD(lossDerivative, 0.02);
-        var model = new NeuralNetwork(optimiser);
+        var model = new NeuralNetwork();
 
         //# InputLayers
         model.Add(1, 0, Activation.Identity);

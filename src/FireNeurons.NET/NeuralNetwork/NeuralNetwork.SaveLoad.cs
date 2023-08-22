@@ -16,18 +16,17 @@ public enum SaveType
 
 public partial class NeuralNetwork
 {
-    public static NeuralNetwork Load(string file, IOptimiser optimiser)
+    public static NeuralNetwork Load(string file)
     {
-        return new(file, optimiser);
+        return new(file);
     }
 
-    public NeuralNetwork(string file, IOptimiser optimiser)
-        : this(LoadFromFile(file), optimiser)
+    public NeuralNetwork(string file)
+        : this(LoadFromFile(file))
     { }
-    public NeuralNetwork(NeuralNetworkDto dto, IOptimiser optimiser)
-        : this(optimiser)
+    public NeuralNetwork(NeuralNetworkDto dto)
+        : this()
     {
-        this.Optimiser = optimiser;
         foreach (var layerDto in dto.Layers)
         {
             var layer = new Layer(layerDto, this);
@@ -37,7 +36,7 @@ public partial class NeuralNetwork
 
     public NeuralNetwork Clone()
     {
-        return new(FromJson(ToJson(new(this))), this.Optimiser);
+        return new(FromJson(ToJson(new(this))));
     }
 
     public void Save(string file, SaveType saveType)

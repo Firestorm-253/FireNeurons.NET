@@ -35,7 +35,7 @@ public class OptimiserTests
         GlobalRandom = new Random(randomSeed);
 
         //# Initialize
-        var model = new NeuralNetwork(optimiser);
+        var model = new NeuralNetwork();
 
         //# InputLayers
         model.Add(2, 0, new Options() { Activation = Activation.Identity, Dropout = 0.00 });
