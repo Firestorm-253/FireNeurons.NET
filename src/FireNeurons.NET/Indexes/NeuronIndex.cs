@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace FireNeurons.NET.Indexes;
+using Objects;
 
 public readonly struct NeuronIndex : IIndex, IEquatable<NeuronIndex>
 {
@@ -21,4 +22,5 @@ public readonly struct NeuronIndex : IIndex, IEquatable<NeuronIndex>
     public static bool operator !=(NeuronIndex a, NeuronIndex b) => !a.Equals(b);
 
     public static implicit operator NeuronIndex((int, LayerIndex) index) => new(index.Item1, index.Item2);
+    public static implicit operator NeuronIndex(Neuron neuron) => neuron.NeuronIndex;
 }

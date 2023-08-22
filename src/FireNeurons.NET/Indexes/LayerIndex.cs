@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 namespace FireNeurons.NET.Indexes;
+using Objects;
 
 public readonly struct LayerIndex : IIndex, IEquatable<LayerIndex>
 {
@@ -19,4 +20,5 @@ public readonly struct LayerIndex : IIndex, IEquatable<LayerIndex>
     public static bool operator !=(LayerIndex a, LayerIndex b) => !a.Equals(b);
 
     public static implicit operator LayerIndex(int index) => new(index);
+    public static implicit operator LayerIndex(Layer layer) => layer.LayerIndex;
 }
