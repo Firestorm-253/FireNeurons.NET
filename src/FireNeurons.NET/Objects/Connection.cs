@@ -1,7 +1,6 @@
-﻿using FireNeurons.NET.Dto;
-using FireNeurons.NET.Optimisation;
-
-namespace FireNeurons.NET.Objects;
+﻿namespace FireNeurons.NET.Objects;
+using Dto;
+using Optimisation;
 
 public class Connection
 {
