@@ -1,12 +1,23 @@
 ﻿using FireNeurons.NET.Indexes;
 using FireNeurons.NET.Objects;
+using FireNeurons.NET.Optimisation.Optimisers;
 
 namespace FireNeurons.NET.Optimisation;
 
 public static class NeuralNetworkTrain
 {
-    public static void Train(this NeuralNetwork network, List<TrainingData> trainingDataSet, int miniBatchSize = 1, int epochs = 1)
+    public static void Train(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        List<TrainingData> trainingDataSet,
+        int miniBatchSize = 1,
+        int epochs = 1)
     {
+        if (!optimiser.OptimiserDatas.Any())
+        {
+            optimiser.CreateData(network);
+        }
+
         for (int epoch = 0; epoch < epochs; epoch++)
         {
             var miniBatches = trainingDataSet.OrderBy(x => GlobalRandom.Next()).Chunk(miniBatchSize);
@@ -18,31 +29,43 @@ public static class NeuralNetworkTrain
                     throw new NotImplementedException();
                 }
 
-                network.Train(miniBatch[0]);
+                network.Train(optimiser, miniBatch[0]);
             }
         }
     }
 
-    public static void Train(this NeuralNetwork network, TrainingData trainingData)
+    public static void Train(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        TrainingData trainingData)
     {
         var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
         network.Evaluate(trainingData.InputData, true, targetIndexes);
 
-        network.TrainTargetLayers(trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons);
+        network.TrainTargetLayers(optimiser, trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons);
 
-        network.TrainHiddenLayers(targetIndexes);
+        network.TrainHiddenLayers(optimiser, targetIndexes);
     }
 
-    private static void TrainTargetLayers(this NeuralNetwork network, Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
+    private static void TrainTargetLayers(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs,
+        NeuronIndex[] ignoreNeurons)
     {
         foreach (var (layerIndex, data) in lossDerivativeArgs.DataLayers)
         {
-            network.TrainTargetLayer(network.Layers[layerIndex], data, ignoreNeurons);
+            network.TrainTargetLayer(optimiser, network.Layers[layerIndex], data, ignoreNeurons);
         }
     }
 
-    private static void TrainTargetLayer(this NeuralNetwork network, Layer targetLayer, (object?, Dictionary<NeuronIndex, object>) lossDerivativeArgs, NeuronIndex[] ignoreNeurons)
+    private static void TrainTargetLayer(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        Layer targetLayer,
+        (object?, Dictionary<NeuronIndex, object>) lossDerivativeArgs,
+        NeuronIndex[] ignoreNeurons)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
@@ -55,17 +78,20 @@ public static class NeuralNetworkTrain
 
             if (targetNeuron.DroppedOut)
             {
-                targetNeuron.OptimiserData.Gradient = 0;
-                targetNeuron.OptimiserData.Delta = 0;
+                optimiser.OptimiserDatas[targetNeuron.Index].Gradient = 0;
+                optimiser.OptimiserDatas[targetNeuron.Index].Delta = 0;
                 continue;
             }
 
-            network.Optimiser.CalculateGradient(targetNeuron, network.Optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.Index]));
-            network.Optimiser.CalculateDelta(targetNeuron.OptimiserData);
+            optimiser.CalculateGradient(targetNeuron, optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.Index]));
+            optimiser.CalculateDelta(optimiser.OptimiserDatas[targetNeuron.Index]);
         }
     }
 
-    private static void TrainHiddenLayers(this NeuralNetwork network, LayerIndex[] targetIndexes)
+    private static void TrainHiddenLayers(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        LayerIndex[] targetIndexes)
     {
         foreach (var (layerIndex, layer) in network.Layers.OrderByDescending(x => x.Key.Index))
         {
@@ -74,36 +100,42 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.TrainHiddenLayer(layer);
+            network.TrainHiddenLayer(optimiser, layer);
         }
     }
 
-    private static void TrainHiddenLayer(this NeuralNetwork network, Layer layer)
+    private static void TrainHiddenLayer(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        Layer layer)
     {
         foreach (var neuron in layer.Neurons)
         {
             if (neuron.DroppedOut)
             {
-                neuron.OptimiserData.Gradient = 0;
-                neuron.OptimiserData.Delta = 0;
+                optimiser.OptimiserDatas[neuron.Index].Gradient = 0;
+                optimiser.OptimiserDatas[neuron.Index].Delta = 0;
                 continue;
             }
 
-            network.TrainHiddenNeuron(neuron);
+            network.TrainHiddenNeuron(optimiser, neuron);
         }
     }
 
-    private static void TrainHiddenNeuron(this NeuralNetwork network, Neuron neuron)
+    private static void TrainHiddenNeuron(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        Neuron neuron)
     {
-        network.Optimiser.CalculateGradient(neuron);
+        optimiser.CalculateGradient(neuron);
 
-        network.Optimiser.CalculateDelta(neuron.OptimiserData);
-        neuron.Bias += neuron.OptimiserData.Delta;
+        optimiser.CalculateDelta(optimiser.OptimiserDatas[neuron.Index]);
+        neuron.Bias += optimiser.OptimiserDatas[neuron.Index].Delta;
 
         foreach (var outgoingConnection in neuron.OutgoingConnections)
         {
-            network.Optimiser.CalculateDelta(outgoingConnection.OptimiserData);
-            outgoingConnection.Weight += outgoingConnection.OptimiserData.Delta;
+            optimiser.CalculateDelta(optimiser.OptimiserDatas[outgoingConnection.Index]);
+            outgoingConnection.Weight += optimiser.OptimiserDatas[outgoingConnection.Index].Delta;
         }
     }
 }
