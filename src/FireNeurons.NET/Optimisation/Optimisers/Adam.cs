@@ -17,7 +17,7 @@ public class Adam : SGD
         this.Beta_2 = beta_2;
     }
 
-    public override void CalculateDelta(IOptimiserData optimiserData)
+    public override void ApplyGradient(IOptimiserData optimiserData)
     {
         if (optimiserData is not AdamData adamData)
         {
@@ -34,6 +34,8 @@ public class Adam : SGD
         adamData.Delta = this.LearningRate * rawDelta;
 
         adamData.TimeStep++;
+
+        base.ApplyGradient(optimiserData);
     }
 }
 
