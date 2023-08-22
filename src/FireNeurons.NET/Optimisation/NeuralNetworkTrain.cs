@@ -1,7 +1,6 @@
-﻿using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Objects;
-
-namespace FireNeurons.NET.Optimisation;
+﻿namespace FireNeurons.NET.Optimisation;
+using Indexes;
+using Objects;
 
 public static class NeuralNetworkTrain
 {
