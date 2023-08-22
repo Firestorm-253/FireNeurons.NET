@@ -1,9 +1,12 @@
 ﻿namespace FireNeurons.NET.Objects;
 using Dto;
+using Indexes;
 using Optimisation;
 
 public class Connection
 {
+    public ConnectionIndex Index { get; init; }
+
     public Neuron InputNeuron { get; init; }
     public Neuron OutputNeuron { get; init; }
 
@@ -12,8 +15,12 @@ public class Connection
     public double Weight { get; set; }
     public IOptimiserData OptimiserData { get; set; } = null!; // for Weight
 
-    public Connection(Neuron inputNeuron, Neuron outputNeuron, IOptimiser optimiser)
+    public Connection(ConnectionIndex index,
+                      Neuron inputNeuron,
+                      Neuron outputNeuron,
+                      IOptimiser optimiser)
     {
+        this.Index = index;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = inputNeuron;
         this.Optimiser = optimiser;
@@ -24,6 +31,7 @@ public class Connection
     /// <summary>Deserialization</summary>
     public Connection(ConnectionDto connectionDto, Neuron outputNeuron, NeuralNetwork network)
     {
+        this.Index = connectionDto.Index;
         this.Weight = connectionDto.Weight;
         this.OutputNeuron = outputNeuron;
         this.InputNeuron = network.Get(connectionDto.InputNeuron);

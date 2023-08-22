@@ -60,7 +60,7 @@ public class Neuron
 
     public void Connect(Neuron input)
     {
-        this.Connections.Add(new Connection(input, this, this.Optimiser));
+        this.Connections.Add(new Connection(new ConnectionIndex(this.Connections.Count, this.NeuronIndex), input, this, this.Optimiser));
     }
 
     public void Randomize()
