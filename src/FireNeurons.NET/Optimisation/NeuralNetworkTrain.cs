@@ -5,15 +5,20 @@ namespace FireNeurons.NET.Optimisation;
 
 public static class NeuralNetworkTrain
 {
-    public static void Train(this NeuralNetwork network, List<TrainingData> trainingDataSet, int iterations = 1)
+    public static void Train(this NeuralNetwork network, List<TrainingData> trainingDataSet, int miniBatchSize = 1, int epochs = 1)
     {
-        for (int iteration = 0; iteration < iterations; iteration++)
+        for (int epoch = 0; epoch < epochs; epoch++)
         {
-            trainingDataSet = trainingDataSet.OrderBy(x => GlobalRandom.Next()).ToList(); // shuffle dataset
+            var miniBatches = trainingDataSet.OrderBy(x => GlobalRandom.Next()).Chunk(miniBatchSize);
 
-            foreach (var trainingData in trainingDataSet)
+            foreach (var miniBatch in miniBatches)
             {
-                network.Train(trainingData);
+                if (miniBatch.Length > 1)
+                {
+                    throw new NotImplementedException();
+                }
+
+                network.Train(miniBatch[0]);
             }
         }
     }
