@@ -41,40 +41,30 @@ public abstract class IOptimiser
         }
     }
 
-    public abstract void CalculateDelta(IOptimiserData optimiserData);
-
-    public void CalculateGradient(Neuron neuron, double loss)
+    public virtual void ApplyGradient(IOptimiserData optimiserData)
     {
-        if (neuron.OutgoingConnections.Count != 0)
-        {
-            throw new Exception("ERROR: Can't set a loss-gradient for a none-output neuron!");
-        }
-
-        this.SetAllGradients(neuron, loss);
+        optimiserData.debug_Gradient = optimiserData.Gradient;
+        optimiserData.Gradient = 0;
     }
-    public void CalculateGradient(Neuron neuron)
-    {
-        if (neuron.OutgoingConnections.Count == 0)
-        {
-            throw new Exception("ERROR: Can't set a normal-gradient for an output neuron!");
-        }
 
+    public void AppendGradient(Neuron neuron)
+    {
         double sum = 0;
         foreach (var connection in neuron.OutgoingConnections)
         {
             sum += connection.Weight * this.OptimiserDatas[connection.OutputNeuron.Index].Gradient;
         }
 
-        this.SetAllGradients(neuron, sum);
+        this.AppendGradient(neuron, sum);
     }
 
     private const double L1_RATIO = 0.50;
-    private void SetAllGradients(Neuron neuron, double loss)
+    public void AppendGradient(Neuron neuron, double loss)
     {
         var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
         double gradient = derivation * loss;
 
-        this.OptimiserDatas[neuron.Index].Gradient = gradient;
+        this.OptimiserDatas[neuron.Index].Gradient += gradient;
 
         foreach (var connection in neuron.Connections)
         {
@@ -83,7 +73,7 @@ public abstract class IOptimiser
             double weightDecay = (L1_RATIO * weightDecay_L1) + ((1 - L1_RATIO) * weightDecay_L2);
 
             double adaptedGradient = gradient - (neuron.Options.WeightDecay * weightDecay);
-            this.OptimiserDatas[connection.Index].Gradient = adaptedGradient * connection.InputNeuron.GetValue(true);
+            this.OptimiserDatas[connection.Index].Gradient += adaptedGradient * connection.InputNeuron.GetValue(true);
         }
     }
 }
@@ -92,4 +82,5 @@ public record IOptimiserData
 {
     public double Delta { get; set; }
     public double Gradient { get; set; }
+    public double debug_Gradient { get; set; }
 }

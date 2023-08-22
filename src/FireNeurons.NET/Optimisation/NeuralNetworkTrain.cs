@@ -22,12 +22,10 @@ public static class NeuralNetworkTrain
 
             foreach (var miniBatch in miniBatches)
             {
-                if (miniBatch.Length > 1)
+                for (int i = 0; i < miniBatch.Length; i++)
                 {
-                    throw new NotImplementedException();
+                    network.Train(optimiser, miniBatch[i], (i == miniBatch.Length - 1));
                 }
-
-                network.Train(optimiser, miniBatch[0]);
             }
         }
     }
@@ -35,26 +33,28 @@ public static class NeuralNetworkTrain
     public static void Train(
         this NeuralNetwork network,
         IOptimiser optimiser,
-        TrainingData trainingData)
+        TrainingData trainingData,
+        bool apply)
     {
         var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
         network.Evaluate(trainingData.InputData, true, targetIndexes);
 
-        network.TrainTargetLayers(optimiser, trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons);
+        network.TrainTargetLayers(optimiser, trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons, apply);
 
-        network.TrainHiddenLayers(optimiser, targetIndexes);
+        network.TrainHiddenLayers(optimiser, targetIndexes, apply);
     }
 
     private static void TrainTargetLayers(
         this NeuralNetwork network,
         IOptimiser optimiser,
         Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs,
-        NeuronIndex[] ignoreNeurons)
+        NeuronIndex[] ignoreNeurons,
+        bool apply)
     {
         foreach (var (layerIndex, data) in lossDerivativeArgs.DataLayers)
         {
-            network.TrainTargetLayer(optimiser, network.Layers[layerIndex], data, ignoreNeurons);
+            network.TrainTargetLayer(optimiser, network.Layers[layerIndex], data, ignoreNeurons, apply);
         }
     }
 
@@ -63,7 +63,8 @@ public static class NeuralNetworkTrain
         IOptimiser optimiser,
         Layer targetLayer,
         (object?, Dictionary<NeuronIndex, object>) lossDerivativeArgs,
-        NeuronIndex[] ignoreNeurons)
+        NeuronIndex[] ignoreNeurons,
+        bool apply)
     {
         for (int n = 0; n < targetLayer.Neurons.Count; n++)
         {
@@ -81,15 +82,21 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            optimiser.CalculateGradient(targetNeuron, optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.Index]));
-            optimiser.CalculateDelta(optimiser.OptimiserDatas[targetNeuron.Index]);
+            optimiser.AppendGradient(targetNeuron, optimiser.LossDerivative(targetNeuron, lossDerivativeArgs.Item1, lossDerivativeArgs.Item2[targetNeuron.Index]));
+
+            if (apply)
+            {
+                optimiser.ApplyGradient(optimiser.OptimiserDatas[targetNeuron.Index]);
+                targetNeuron.Bias += optimiser.OptimiserDatas[targetNeuron.Index].Delta;
+            }
         }
     }
 
     private static void TrainHiddenLayers(
         this NeuralNetwork network,
         IOptimiser optimiser,
-        LayerIndex[] targetIndexes)
+        LayerIndex[] targetIndexes,
+        bool apply)
     {
         foreach (var (layerIndex, layer) in network.Layers.OrderByDescending(x => x.Key.Index))
         {
@@ -98,14 +105,15 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.TrainHiddenLayer(optimiser, layer);
+            network.TrainHiddenLayer(optimiser, layer, apply);
         }
     }
 
     private static void TrainHiddenLayer(
         this NeuralNetwork network,
         IOptimiser optimiser,
-        Layer layer)
+        Layer layer,
+        bool apply)
     {
         foreach (var neuron in layer.Neurons)
         {
@@ -116,24 +124,31 @@ public static class NeuralNetworkTrain
                 continue;
             }
 
-            network.TrainHiddenNeuron(optimiser, neuron);
+            network.TrainHiddenNeuron(optimiser, neuron, apply);
         }
     }
 
     private static void TrainHiddenNeuron(
         this NeuralNetwork network,
         IOptimiser optimiser,
-        Neuron neuron)
+        Neuron neuron,
+        bool apply)
     {
-        optimiser.CalculateGradient(neuron);
+        optimiser.AppendGradient(neuron);
 
-        optimiser.CalculateDelta(optimiser.OptimiserDatas[neuron.Index]);
-        neuron.Bias += optimiser.OptimiserDatas[neuron.Index].Delta;
+        if (apply)
+        {
+            optimiser.ApplyGradient(optimiser.OptimiserDatas[neuron.Index]);
+            neuron.Bias += optimiser.OptimiserDatas[neuron.Index].Delta;
+        }
 
         foreach (var outgoingConnection in neuron.OutgoingConnections)
         {
-            optimiser.CalculateDelta(optimiser.OptimiserDatas[outgoingConnection.Index]);
-            outgoingConnection.Weight += optimiser.OptimiserDatas[outgoingConnection.Index].Delta;
+            if (apply)
+            {
+                optimiser.ApplyGradient(optimiser.OptimiserDatas[outgoingConnection.Index]);
+                outgoingConnection.Weight += optimiser.OptimiserDatas[outgoingConnection.Index].Delta;
+            }
         }
     }
 }
