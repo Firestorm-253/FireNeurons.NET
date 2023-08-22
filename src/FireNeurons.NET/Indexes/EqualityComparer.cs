@@ -8,11 +8,11 @@ public class LayerEqualityComparer : EqualityComparer<Layer>
 
     public override bool Equals(Layer? l, Layer? r)
     {
-        return this.comparer.Equals(l!.LayerIndex, r!.LayerIndex);
+        return this.comparer.Equals(l!.Index, r!.Index);
     }
 
     public override int GetHashCode(Layer rule)
     {
-        return this.comparer.GetHashCode(rule.LayerIndex);
+        return this.comparer.GetHashCode(rule.Index);
     }
 }

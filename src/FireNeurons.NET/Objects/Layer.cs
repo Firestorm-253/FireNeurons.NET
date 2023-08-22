@@ -6,13 +6,13 @@ namespace FireNeurons.NET.Objects;
 public class Layer
 {
     public Options Options { get; init; }
-    public LayerIndex LayerIndex { get; init; }
+    public LayerIndex Index { get; init; }
     public List<Neuron> Neurons { get; init; } = new();
 
 
-    public Layer(LayerIndex layerIndex, int neurons, Options options)
+    public Layer(LayerIndex index, int neurons, Options options)
     {
-        this.LayerIndex = layerIndex;
+        this.Index = index;
         this.Options = options;
 
         this.AddNeurons(neurons);
@@ -20,7 +20,7 @@ public class Layer
     /// <summary>Deserialization</summary>
     public Layer(LayerDto layerDto, NeuralNetwork network)
     {
-        this.LayerIndex = layerDto.LayerIndex;
+        this.Index = layerDto.Index;
         this.Options = layerDto.Options;
 
         foreach (var neuronDto in layerDto.Neurons)
@@ -33,7 +33,7 @@ public class Layer
     {
         for (int n = 0; n < amount; n++)
         {
-            this.Neurons.Add(new Neuron((n, this.LayerIndex), this.Options, this));
+            this.Neurons.Add(new Neuron((n, this.Index), this.Options, this));
         }
     }
 
@@ -89,10 +89,10 @@ public class Layer
             return false;
         }
 
-        return this.LayerIndex.Equals(layer.LayerIndex);
+        return this.Index.Equals(layer.Index);
     }
     public override int GetHashCode()
     {
-        return this.LayerIndex.GetHashCode();
+        return this.Index.GetHashCode();
     }
 }

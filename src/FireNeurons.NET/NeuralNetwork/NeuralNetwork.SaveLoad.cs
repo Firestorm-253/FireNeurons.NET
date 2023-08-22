@@ -31,7 +31,7 @@ public partial class NeuralNetwork
         foreach (var layerDto in dto.Layers)
         {
             var layer = new Layer(layerDto, this);
-            this.Layers.Add(layer.LayerIndex, layer);
+            this.Layers.Add(layer.Index, layer);
         }
     }
 

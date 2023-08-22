@@ -107,7 +107,7 @@ public partial class NeuralNetwork
             {
                 continue;
             }
-            dict.Add(layer.LayerIndex, layer.GetVisualization());
+            dict.Add(layer.Index, layer.GetVisualization());
         }
         return dict;
     }
