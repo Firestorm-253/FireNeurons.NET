@@ -43,7 +43,7 @@ public abstract class IOptimiser
 
     public virtual void ApplyGradient(IOptimiserData optimiserData)
     {
-        optimiserData.debug_Gradient = optimiserData.Gradient;
+        optimiserData.FinalGradient = optimiserData.Gradient;
         optimiserData.Gradient = 0;
     }
 
@@ -52,7 +52,7 @@ public abstract class IOptimiser
         double sum = 0;
         foreach (var connection in neuron.OutgoingConnections)
         {
-            sum += connection.Weight * this.OptimiserDatas[connection.OutputNeuron.Index].Gradient;
+            sum += connection.Weight * this.OptimiserDatas[connection.OutputNeuron.Index].FinalGradient;
         }
 
         this.AppendGradient(neuron, sum);
@@ -82,5 +82,5 @@ public record IOptimiserData
 {
     public double Delta { get; set; }
     public double Gradient { get; set; }
-    public double debug_Gradient { get; set; }
+    public double FinalGradient { get; set; }
 }
