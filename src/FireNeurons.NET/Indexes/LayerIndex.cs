@@ -2,7 +2,7 @@
 
 namespace FireNeurons.NET.Indexes;
 
-public readonly struct LayerIndex : IEquatable<LayerIndex>
+public readonly struct LayerIndex : IIndex, IEquatable<LayerIndex>
 {
     public int Index { get; init; }
 
