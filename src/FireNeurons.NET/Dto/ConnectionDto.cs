@@ -1,7 +1,6 @@
-﻿using FireNeurons.NET.Indexes;
-using FireNeurons.NET.Objects;
-
-namespace FireNeurons.NET.Dto;
+﻿namespace FireNeurons.NET.Dto;
+using Indexes;
+using Objects;
 
 public record ConnectionDto
 {
