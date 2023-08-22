@@ -71,7 +71,7 @@ public class OptimiserTests
             model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.NeuronIndex.LayerIndex),
         };
 
-        model.Train(trainingDataSet, iterations: 200);
+        model.Train(trainingDataSet, epochs: 200);
 
         var resultsAfter = new Data[]
         {
