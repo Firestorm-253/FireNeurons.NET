@@ -81,7 +81,7 @@ public class Layer
         }
         return dict;
     }
-    public Dictionary<NeuronIndex, double[]> GetVisualization(int clipMin, int clipMax)
+    public Dictionary<NeuronIndex, double[]> GetVisualization(double clipMin, double clipMax)
     {
         var dict = new Dictionary<NeuronIndex, double[]>();
         foreach (var neuron in this.Neurons)

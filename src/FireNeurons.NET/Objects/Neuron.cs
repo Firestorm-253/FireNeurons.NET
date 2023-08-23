@@ -134,7 +134,7 @@ public class Neuron
 
         return this.Connections.Select(x => (x.Weight + offset) / max).ToArray();
     }
-    public double[] GetVisualization(int clipMin, int clipMax)
+    public double[] GetVisualization(double clipMin, double clipMax)
     {
         return this.Connections.Select(x => Math.Max(clipMin, Math.Min(clipMax, x.Weight))).ToArray();
     }
