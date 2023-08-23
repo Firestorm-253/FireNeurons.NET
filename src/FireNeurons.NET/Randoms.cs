@@ -45,6 +45,6 @@ public static class Randoms
             throw new Exception("ERROR: max must be greater than min!");
         }
 
-        return (GlobalRandom.NextDouble() * range) - min;
+        return (GlobalRandom.NextDouble() * range) - min.Abs();
     }
 }
