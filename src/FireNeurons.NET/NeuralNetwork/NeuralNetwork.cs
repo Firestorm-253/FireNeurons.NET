@@ -111,7 +111,7 @@ public partial class NeuralNetwork
         }
         return dict;
     }
-    public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization(int clipMin, int clipMax)
+    public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization(double clipMin, double clipMax)
     {
         var dict = new Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>>();
         foreach (var (_, layer) in this.Layers)
