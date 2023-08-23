@@ -134,6 +134,10 @@ public class Neuron
 
         return this.Connections.Select(x => (x.Weight + offset) / max).ToArray();
     }
+    public double[] GetVisualization(int clipMin, int clipMax)
+    {
+        return this.Connections.Select(x => Math.Max(clipMin, Math.Min(clipMax, x.Weight))).ToArray();
+    }
 
     public override bool Equals(object? obj)
     {
