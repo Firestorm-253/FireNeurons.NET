@@ -9,7 +9,7 @@
     <Authors>Firestorm253</Authors>
     <Title>$(AssemblyName)</Title>
     <Copyright>Laurin Zehnder</Copyright>
-	<Version>1.2.1.0</Version>
+	<Version>1.2.1.1</Version>
     <Description>$(AssemblyName) is a userfriendly NeuralNetwork library.</Description>
     <PackageProjectUrl>https://github.com/Firestorm-253/FireNeurons.NET</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
