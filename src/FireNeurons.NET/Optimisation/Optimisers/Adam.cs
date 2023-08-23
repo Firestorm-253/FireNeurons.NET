@@ -32,8 +32,7 @@ public class Adam : IOptimiser
         var momentum_fixed = adamData.Momentum.FixBias(this.Beta_1, adamData.TimeStep);
         var momentumSquared_fixed = adamData.MomentumSquared.FixBias(this.Beta_2, adamData.TimeStep);
 
-        var rawDelta = momentum_fixed / (momentumSquared_fixed.Sqrt() + 10.0.Pow(-6));
-        adamData.Delta = this.LearningRate * rawDelta;
+        adamData.Delta = momentum_fixed / (momentumSquared_fixed.Sqrt() + 10.0.Pow(-6));
 
         adamData.TimeStep++;
     }
