@@ -81,7 +81,16 @@ public class Layer
         }
         return dict;
     }
-
+    public Dictionary<NeuronIndex, double[]> GetVisualization(int clipMin, int clipMax)
+    {
+        var dict = new Dictionary<NeuronIndex, double[]>();
+        foreach (var neuron in this.Neurons)
+        {
+            dict.Add(neuron.Index, neuron.GetVisualization(clipMin, clipMax));
+        }
+        return dict;
+    }
+    
     public override bool Equals(object? obj)
     {
         if (obj is not Layer layer)

@@ -111,7 +111,20 @@ public partial class NeuralNetwork
         }
         return dict;
     }
-
+    public Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>> GetVisualization(int clipMin, int clipMax)
+    {
+        var dict = new Dictionary<LayerIndex, Dictionary<NeuronIndex, double[]>>();
+        foreach (var (_, layer) in this.Layers)
+        {
+            if (!layer.Neurons.Any(x => x.Connections.Any()))
+            {
+                continue;
+            }
+            dict.Add(layer.Index, layer.GetVisualization(clipMin, clipMax));
+        }
+        return dict;
+    }
+    
     public override bool Equals(object? obj)
     {
 #pragma warning disable IDE0011 // Geschweifte Klammern hinzufügen

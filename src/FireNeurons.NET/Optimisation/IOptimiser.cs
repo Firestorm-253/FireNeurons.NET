@@ -44,6 +44,7 @@ public abstract class IOptimiser
     public virtual void ApplyGradient(IOptimiserData optimiserData, int miniBatchSize)
     {
         optimiserData.FinalGradient = optimiserData.SummedGradient / miniBatchSize;
+        optimiserData.PartialGradient = 0;
         optimiserData.SummedGradient = 0;
     }
 
@@ -52,7 +53,7 @@ public abstract class IOptimiser
         double sum = 0;
         foreach (var connection in neuron.OutgoingConnections)
         {
-            sum += connection.Weight * this.OptimiserDatas[connection.OutputNeuron.Index].FinalGradient;
+            sum += connection.Weight * this.OptimiserDatas[connection.OutputNeuron.Index].PartialGradient;
         }
 
         this.AppendGradient(neuron, sum);
@@ -64,7 +65,8 @@ public abstract class IOptimiser
         var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
         double gradient = derivation * loss;
 
-        this.OptimiserDatas[neuron.Index].SummedGradient += gradient;
+        this.OptimiserDatas[neuron.Index].PartialGradient = gradient;
+        this.OptimiserDatas[neuron.Index].SummedGradient += this.OptimiserDatas[neuron.Index].PartialGradient;
 
         foreach (var connection in neuron.Connections)
         {
@@ -73,7 +75,9 @@ public abstract class IOptimiser
             double weightDecay = (L1_RATIO * weightDecay_L1) + ((1 - L1_RATIO) * weightDecay_L2);
 
             double adaptedGradient = gradient - (neuron.Options.WeightDecay * weightDecay);
-            this.OptimiserDatas[connection.Index].SummedGradient += adaptedGradient * connection.InputNeuron.GetValue(true);
+            
+            this.OptimiserDatas[connection.Index].PartialGradient = adaptedGradient * connection.InputNeuron.GetValue(true);
+            this.OptimiserDatas[connection.Index].SummedGradient += this.OptimiserDatas[connection.Index].PartialGradient;
         }
     }
 }
@@ -81,6 +85,7 @@ public abstract class IOptimiser
 public record IOptimiserData
 {
     public double Delta { get; set; }
+    public double PartialGradient { get; set; }
     public double SummedGradient { get; set; }
     public double FinalGradient { get; set; }
 }
