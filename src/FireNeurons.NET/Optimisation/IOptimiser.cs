@@ -41,10 +41,10 @@ public abstract class IOptimiser
         }
     }
 
-    public virtual void ApplyGradient(IOptimiserData optimiserData)
+    public virtual void ApplyGradient(IOptimiserData optimiserData, int miniBatchSize)
     {
-        optimiserData.FinalGradient = optimiserData.Gradient;
-        optimiserData.Gradient = 0;
+        optimiserData.FinalGradient = optimiserData.SummedGradient / miniBatchSize;
+        optimiserData.SummedGradient = 0;
     }
 
     public void AppendGradient(Neuron neuron)
@@ -64,7 +64,7 @@ public abstract class IOptimiser
         var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
         double gradient = derivation * loss;
 
-        this.OptimiserDatas[neuron.Index].Gradient += gradient;
+        this.OptimiserDatas[neuron.Index].SummedGradient += gradient;
 
         foreach (var connection in neuron.Connections)
         {
@@ -73,7 +73,7 @@ public abstract class IOptimiser
             double weightDecay = (L1_RATIO * weightDecay_L1) + ((1 - L1_RATIO) * weightDecay_L2);
 
             double adaptedGradient = gradient - (neuron.Options.WeightDecay * weightDecay);
-            this.OptimiserDatas[connection.Index].Gradient += adaptedGradient * connection.InputNeuron.GetValue(true);
+            this.OptimiserDatas[connection.Index].SummedGradient += adaptedGradient * connection.InputNeuron.GetValue(true);
         }
     }
 }
@@ -81,6 +81,6 @@ public abstract class IOptimiser
 public record IOptimiserData
 {
     public double Delta { get; set; }
-    public double Gradient { get; set; }
+    public double SummedGradient { get; set; }
     public double FinalGradient { get; set; }
 }
