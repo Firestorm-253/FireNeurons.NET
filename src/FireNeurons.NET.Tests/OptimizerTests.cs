@@ -40,12 +40,12 @@ public class OptimiserTests
         model.Add(2, 0, new Options() { Activation = Activation.Identity, UseBias = false, Dropout = 0.00 });
 
         //# HiddenLayers
-        model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 0);
-        model.Add(100, 2, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 1);
-        model.Add(100, 3, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, WeightDecay = 0.001 }, 2);
+        model.Add(100, 1, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, L1_Reg = 0.000, L2_Reg = 0.1 }, 0);
+        model.Add(100, 2, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, L1_Reg = 0.000, L2_Reg = 0.1 }, 1);
+        model.Add(100, 3, new Options() { Activation = Activation.LeakyRelu, Dropout = 0.10, L1_Reg = 0.000, L2_Reg = 0.1 }, 2);
 
         //# OutputLayers
-        model.Add(1, 4, new Options() { Activation = Activation.Sigmoid, WeightDecay = 0.001 }, 3);
+        model.Add(1, 4, new Options() { Activation = Activation.Sigmoid, L1_Reg = 0.000, L2_Reg = 0.1 }, 3);
 
         //# Compile
         model.Randomize();
@@ -70,7 +70,7 @@ public class OptimiserTests
             model.Evaluate(trainingDataSet[3].InputData, false, outputNeuron.Index.LayerIndex),
         };
 
-        model.Train(optimiser, trainingDataSet, miniBatchSize: 2, epochs: 200);
+        model.Train(optimiser, trainingDataSet, miniBatchSize: 1, epochs: 1);
 
         var resultsAfter = new Data[]
         {

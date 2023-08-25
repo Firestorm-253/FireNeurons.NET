@@ -17,9 +17,9 @@ public class Adam : IOptimiser
         this.Beta_2 = beta_2;
     }
 
-    public override void ApplyGradient(IOptimiserData optimiserData, int miniBatchSize)
+    public override void ApplyGradient(IOptimiserData optimiserData, double entValue, Options options, int miniBatchSize)
     {
-        base.ApplyGradient(optimiserData, miniBatchSize);
+        base.ApplyGradient(optimiserData, entValue, options, miniBatchSize);
 
         if (optimiserData is not AdamData adamData)
         {

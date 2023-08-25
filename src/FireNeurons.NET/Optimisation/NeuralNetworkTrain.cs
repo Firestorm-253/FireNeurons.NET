@@ -80,7 +80,8 @@ public static class NeuralNetworkTrain
 
             if (targetNeuron.DroppedOut)
             {
-                optimiser.OptimiserDatas[targetNeuron.Index].SummedGradient = 0;
+                optimiser.OptimiserDatas[targetNeuron.Index].PartialGradient = 0;
+                optimiser.OptimiserDatas[targetNeuron.Index].FinalGradient = 0;
                 optimiser.OptimiserDatas[targetNeuron.Index].Delta = 0;
                 continue;
             }
@@ -89,7 +90,7 @@ public static class NeuralNetworkTrain
 
             if (apply)
             {
-                optimiser.ApplyGradient(optimiser.OptimiserDatas[targetNeuron.Index], miniBatchSize);
+                optimiser.ApplyGradient(optimiser.OptimiserDatas[targetNeuron.Index], targetNeuron.Bias, targetNeuron.Options, miniBatchSize);
                 targetNeuron.Bias += optimiser.OptimiserDatas[targetNeuron.Index].Delta;
             }
         }
@@ -124,7 +125,8 @@ public static class NeuralNetworkTrain
         {
             if (neuron.DroppedOut)
             {
-                optimiser.OptimiserDatas[neuron.Index].SummedGradient = 0;
+                optimiser.OptimiserDatas[neuron.Index].PartialGradient = 0;
+                optimiser.OptimiserDatas[neuron.Index].FinalGradient = 0;
                 optimiser.OptimiserDatas[neuron.Index].Delta = 0;
                 continue;
             }
@@ -142,19 +144,18 @@ public static class NeuralNetworkTrain
     {
         optimiser.AppendGradient(neuron);
 
-        if (apply)
+        if (!apply)
         {
-            optimiser.ApplyGradient(optimiser.OptimiserDatas[neuron.Index], miniBatchSize);
-            neuron.Bias += optimiser.OptimiserDatas[neuron.Index].Delta;
+            return;
         }
+
+        optimiser.ApplyGradient(optimiser.OptimiserDatas[neuron.Index], neuron.Bias, neuron.Options, miniBatchSize);
+        neuron.Bias += optimiser.OptimiserDatas[neuron.Index].Delta;
 
         foreach (var outgoingConnection in neuron.OutgoingConnections)
         {
-            if (apply)
-            {
-                optimiser.ApplyGradient(optimiser.OptimiserDatas[outgoingConnection.Index], miniBatchSize);
-                outgoingConnection.Weight += optimiser.OptimiserDatas[outgoingConnection.Index].Delta;
-            }
+            optimiser.ApplyGradient(optimiser.OptimiserDatas[outgoingConnection.Index], outgoingConnection.Weight, outgoingConnection.OutputNeuron.Options, miniBatchSize);
+            outgoingConnection.Weight += optimiser.OptimiserDatas[outgoingConnection.Index].Delta;
         }
     }
 }
