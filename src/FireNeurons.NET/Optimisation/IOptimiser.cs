@@ -27,8 +27,6 @@ public abstract class IOptimiser
 
         foreach (var (layerIndex, layer) in network.Layers)
         {
-            this.OptimiserDatas.Add(layerIndex, this.DataInstance);
-
             foreach (var neuron in layer.Neurons)
             {
                 this.OptimiserDatas.Add(neuron.Index, this.DataInstance);
@@ -41,10 +39,20 @@ public abstract class IOptimiser
         }
     }
 
-    public virtual void ApplyGradient(IOptimiserData optimiserData, int miniBatchSize)
+    public virtual void ApplyGradient(IOptimiserData optimiserData, double entValue, Options options, int miniBatchSize)
     {
         optimiserData.FinalGradient = optimiserData.SummedGradient / miniBatchSize;
-        optimiserData.PartialGradient = 0;
+
+        if (entValue != 0)
+        {
+            double weightDecay_L1 = entValue / entValue.Abs();
+            double weightDecay_L2 = entValue;
+
+            optimiserData.FinalGradient -= (options.L1_Reg * weightDecay_L1);
+            optimiserData.FinalGradient -= (options.L2_Reg * weightDecay_L2);
+        }
+
+        //optimiserData.PartialGradient = 0;
         optimiserData.SummedGradient = 0;
     }
 
@@ -59,7 +67,6 @@ public abstract class IOptimiser
         this.AppendGradient(neuron, sum);
     }
 
-    private const double L1_RATIO = 0.50;
     public void AppendGradient(Neuron neuron, double loss)
     {
         var derivation = neuron.Blank.Derivate(neuron.Options.Activation);
@@ -70,14 +77,10 @@ public abstract class IOptimiser
 
         foreach (var connection in neuron.Connections)
         {
-            double weightDecay_L1 = connection.Weight / connection.Weight.Abs();
-            double weightDecay_L2 = 2 * connection.Weight;
-            double weightDecay = (L1_RATIO * weightDecay_L1) + ((1 - L1_RATIO) * weightDecay_L2);
+            double gradient_conn = gradient * connection.InputNeuron.GetValue(true);
 
-            double adaptedGradient = gradient - (neuron.Options.WeightDecay * weightDecay);
-            
-            this.OptimiserDatas[connection.Index].PartialGradient = adaptedGradient * connection.InputNeuron.GetValue(true);
-            this.OptimiserDatas[connection.Index].SummedGradient += this.OptimiserDatas[connection.Index].PartialGradient;
+            this.OptimiserDatas[connection.Index].PartialGradient = gradient_conn;
+            this.OptimiserDatas[connection.Index].SummedGradient += gradient_conn;
         }
     }
 }

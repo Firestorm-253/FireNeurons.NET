@@ -9,9 +9,9 @@ public class SGD : IOptimiser
         : base(lossDerivative, learningRate)
     { }
 
-    public override void ApplyGradient(IOptimiserData optimiserData, int miniBatchSize)
+    public override void ApplyGradient(IOptimiserData optimiserData, double entValue, Options options, int miniBatchSize)
     {
-        base.ApplyGradient(optimiserData, miniBatchSize);
+        base.ApplyGradient(optimiserData, entValue, options, miniBatchSize);
 
         optimiserData.Delta = this.LearningRate * optimiserData.FinalGradient;
     }
