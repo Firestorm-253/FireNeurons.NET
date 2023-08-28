@@ -6,75 +6,58 @@ namespace FireNeurons.NET.Analyser;
 using Indexes;
 using Objects;
 using Optimisation;
-using Optimisation.Optimisers;
 
-public partial class Form1 : Form
+public partial class AnalyserForm : Form
 {
-    const int MINIBATCH_SIZE = 1;
-    const int EPOCHS = 1;
+    private readonly double chartPrecision;
+    private readonly int miniBatchSize;
+    private readonly int epochsPerEpoch;
 
-    NeuralNetwork network_1 = null!;
-    NeuralNetwork network_2 = null!;
+    private readonly Func<Neuron, object?, object, double> loss_getter;
 
-    IOptimiser otpimiser_1 = null!;
-    IOptimiser otpimiser_2 = null!;
+    public NeuralNetwork Network_1 { get; init; }
+    public NeuralNetwork Network_2 { get; init; }
 
-    (Data, object)[] trainingData;
-    (Data, object)[] validationData;
+    public IOptimiser Otpimiser_1 { get; init; }
+    public IOptimiser Otpimiser_2 { get; init; }
 
-    public Form1()
+    public List<TrainingData> TrainingData { get; init; }
+    public List<TrainingData> ValidationData { get; init; }
+
+    public AnalyserForm(
+        NeuralNetwork network_1,
+        NeuralNetwork network_2,
+        IOptimiser otpimiser_1,
+        IOptimiser otpimiser_2,
+        List<TrainingData> trainingData,
+        List<TrainingData> validationData,
+        Func<Neuron, object?, object, double> loss_getter,
+        double chartPrecision = 0.001,
+        int miniBatchSize = 1,
+        int epochsPerEpoch = 1)
     {
         this.InitializeComponent();
 
-        throw new NotImplementedException();
-        this.trainingData = new (Data, object)[0];
-        this.validationData = new (Data, object)[0];
+        this.Network_1 = network_1;
+        this.Network_2 = network_2;
+        this.Otpimiser_1 = otpimiser_1;
+        this.Otpimiser_2 = otpimiser_2;
+        this.TrainingData = trainingData;
+        this.ValidationData = validationData;
 
+        this.loss_getter = loss_getter;
 
-        this.InitOptimisers();
+        this.chartPrecision = chartPrecision;
+        this.miniBatchSize = miniBatchSize;
+        this.epochsPerEpoch = epochsPerEpoch;
+
         this.InitChart();
-        this.network_1 = GenerateNework_1();
-        this.network_2 = GenerateNework_2();
-
-    }
-
-    private void InitOptimisers()
-    {
-        this.otpimiser_1 = new Adam((n, go, lo) =>
-        {
-            throw new NotImplementedException();
-        });
-        this.otpimiser_2 = new Adam((n, go, lo) =>
-        {
-            throw new NotImplementedException();
-        });
-    }
-
-    private static NeuralNetwork GenerateNework_1()
-    {
-        var network = new NeuralNetwork();
-
-        throw new NotImplementedException();
-
-        network.Randomize();
-        return network;
-    }
-    private static NeuralNetwork GenerateNework_2()
-    {
-        var network = new NeuralNetwork();
-
-        throw new NotImplementedException();
-
-        network.Randomize();
-        return network;
     }
 
     private void InitChart()
     {
-        const double precision = 0.001;
-
         this.cartesianChart.Series = new SeriesCollection(Mappers.Xy<double>()
-                .Y(v => Math.Log(((1 / precision) * v) + 1, 10)))
+                .Y(v => Math.Log(((1 / this.chartPrecision) * v) + 1, 10)))
             {
                 new LineSeries
                 {
@@ -125,7 +108,7 @@ public partial class Form1 : Form
 
         this.cartesianChart.AxisY.Add(new LogarithmicAxis
         {
-            LabelFormatter = value => (precision * (Math.Pow(10, value) - 1)).ToString("G3"),
+            LabelFormatter = value => (this.chartPrecision * (Math.Pow(10, value) - 1)).ToString("G3"),
             Base = 10,
             MinValue = 0,
             Separator = new Separator
@@ -137,7 +120,7 @@ public partial class Form1 : Form
         var iterationsLabels = new string[1_000];
         for (int i = 0; i < iterationsLabels.Length; i++)
         {
-            iterationsLabels[i] = (i * (this.trainingData.Length / MINIBATCH_SIZE)).ToString();
+            iterationsLabels[i] = (i * (this.TrainingData.Count / this.miniBatchSize)).ToString();
         }
 
         this.cartesianChart.AxisX.Add(new Axis
@@ -157,27 +140,20 @@ public partial class Form1 : Form
         await Task.Run(this.Train);
         this.btnTrain.Enabled = true;
     }
-    private void Train()
+    public void Train()
     {
-        var trainingDataSet = new List<TrainingData>();
-        foreach (var data in this.trainingData)
-        {
-            var (inputData, lossDerivativeArgs) = this.GetTrainingData(data);
-            trainingDataSet.Add(new(inputData, lossDerivativeArgs));
-        }
-
         int epochs = int.Parse(this.textBox1.Text);
         for (int epoch = 0; epoch < epochs; epoch++)
         {
-            this.network_1.Train(this.otpimiser_1, trainingDataSet, miniBatchSize: MINIBATCH_SIZE, epochs: EPOCHS);
-            this.network_2.Train(this.otpimiser_2, trainingDataSet, miniBatchSize: MINIBATCH_SIZE, epochs: EPOCHS);
+            this.Network_1.Train(this.Otpimiser_1, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
+            this.Network_2.Train(this.Otpimiser_2, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
 
 
-            double eval_1_training = Evaluate(this.network_1, this.trainingData);
-            double eval_1_validation = Evaluate(this.network_1, this.validationData);
+            double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
+            double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
 
-            double eval_2_training = Evaluate(this.network_2, this.trainingData);
-            double eval_2_validation = Evaluate(this.network_2, this.validationData);
+            double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
+            double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
 
             this.cartesianChart.Series[0].Values.Add(eval_1_training);
             this.cartesianChart.Series[1].Values.Add(eval_1_validation);
@@ -187,28 +163,25 @@ public partial class Form1 : Form
         }
     }
 
-    private (Data inputData, Data<(object?, Dictionary<NeuronIndex, object>)> lossDerivativeArgs) GetTrainingData((Data, object) data)
-    {
-        throw new NotImplementedException();
-    }
-
-    private static double Evaluate(NeuralNetwork network, (Data, object)[] evaluationDataSet)
+    public double Evaluate(NeuralNetwork network, List<TrainingData> evaluationDataSet)
     {
         double sum = 0;
 
-        foreach (var (inputData, lossArg) in evaluationDataSet)
+        foreach (var trainingData in evaluationDataSet)
         {
-            var outputLayerIndex = network.Layers.Last().Value.Index;
-            var outputs = network.Evaluate(inputData, false, outputLayerIndex)[outputLayerIndex];
+            var outputLayer = network.Layers.Last().Value;
+            var (globalArg, localArgs) = trainingData.LossDerivativeArgs[outputLayer];
+
+            var outputs = network.Evaluate(trainingData.InputData, false, outputLayer)[outputLayer];
 
             for (int index = 0; index < outputs.Length; index++)
             {
-                //sum += lossArg & outputs;
+                sum += this.loss_getter(outputLayer.Neurons[index], globalArg, localArgs[outputLayer.Neurons[index].Index]);
             }
 
             sum /= outputs.Length;
         }
 
-        return sum / evaluationDataSet.Length;
+        return sum / evaluationDataSet.Count;
     }
 }

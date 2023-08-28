@@ -1,6 +1,6 @@
 ﻿namespace FireNeurons.NET.Analyser;
 
-partial class Form1
+partial class AnalyserForm
 {
     /// <summary>
     ///  Required designer variable.
@@ -35,9 +35,9 @@ partial class Form1
         // 
         // btnTrain
         // 
-        btnTrain.Location = new Point(209, 427);
+        btnTrain.Location = new Point(12, 585);
         btnTrain.Name = "btnTrain";
-        btnTrain.Size = new Size(183, 38);
+        btnTrain.Size = new Size(91, 24);
         btnTrain.TabIndex = 0;
         btnTrain.Text = "Train";
         btnTrain.UseVisualStyleBackColor = true;
@@ -45,7 +45,7 @@ partial class Form1
         // 
         // textBox1
         // 
-        textBox1.Location = new Point(331, 398);
+        textBox1.Location = new Point(109, 586);
         textBox1.Name = "textBox1";
         textBox1.Size = new Size(61, 23);
         textBox1.TabIndex = 10;
@@ -53,21 +53,21 @@ partial class Form1
         // 
         // cartesianChart
         // 
-        this.cartesianChart.Location = new Point(398, 12);
+        this.cartesianChart.Location = new Point(12, 12);
         this.cartesianChart.Name = "cartesianChart";
-        this.cartesianChart.Size = new Size(731, 489);
+        this.cartesianChart.Size = new Size(1117, 567);
         this.cartesianChart.TabIndex = 11;
         // 
-        // Form1
+        // AnalyserForm
         // 
         this.AutoScaleDimensions = new SizeF(7F, 15F);
         this.AutoScaleMode = AutoScaleMode.Font;
-        this.ClientSize = new Size(1141, 513);
+        this.ClientSize = new Size(1141, 618);
         this.Controls.Add(this.cartesianChart);
         this.Controls.Add(textBox1);
         this.Controls.Add(btnTrain);
         this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-        this.Name = "Form1";
+        this.Name = "AnalyserForm";
         this.ResumeLayout(false);
         this.PerformLayout();
     }
