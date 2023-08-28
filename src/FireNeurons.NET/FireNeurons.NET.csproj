@@ -15,7 +15,7 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageIcon>firestorm.jpg</PackageIcon>
     <Company>Laurin Zehnder</Company>
-    <PackageOutputPath>bin\Debug\packages</PackageOutputPath>
+    <PackageOutputPath>$(OutputPath)</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
