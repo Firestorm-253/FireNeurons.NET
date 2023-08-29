@@ -169,6 +169,8 @@ public partial class AnalyserForm : Form
 
         foreach (var trainingData in evaluationDataSet)
         {
+            double _sum = 0;
+
             var outputLayer = network.Layers.Last().Value;
             var (globalArg, localArgs) = trainingData.LossDerivativeArgs[outputLayer];
 
@@ -176,10 +178,10 @@ public partial class AnalyserForm : Form
 
             for (int index = 0; index < outputs.Length; index++)
             {
-                sum += this.loss_getter(outputLayer.Neurons[index], globalArg, localArgs[outputLayer.Neurons[index].Index]);
+                _sum += this.loss_getter(outputLayer.Neurons[index], globalArg, localArgs[outputLayer.Neurons[index].Index]);
             }
 
-            sum /= outputs.Length;
+            sum += _sum / outputs.Length;
         }
 
         return sum / evaluationDataSet.Count;
