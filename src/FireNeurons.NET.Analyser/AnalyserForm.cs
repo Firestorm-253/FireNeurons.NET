@@ -21,14 +21,15 @@ public partial class AnalyserForm : Form
     public IOptimiser Otpimiser_1 { get; init; }
     public IOptimiser Otpimiser_2 { get; init; }
 
+    public string Label_1 { get; init; }
+    public string Label_2 { get; init; }
+    
     public List<TrainingData> TrainingData { get; init; }
     public List<TrainingData> ValidationData { get; init; }
 
     public AnalyserForm(
-        NeuralNetwork network_1,
-        NeuralNetwork network_2,
-        IOptimiser otpimiser_1,
-        IOptimiser otpimiser_2,
+        (NeuralNetwork network, IOptimiser optimiser, string label) obj_1,
+        (NeuralNetwork network, IOptimiser optimiser, string label) obj_2,
         List<TrainingData> trainingData,
         List<TrainingData> validationData,
         Func<Neuron, object?, object, double> loss_getter,
@@ -38,10 +39,14 @@ public partial class AnalyserForm : Form
     {
         this.InitializeComponent();
 
-        this.Network_1 = network_1;
-        this.Network_2 = network_2;
-        this.Otpimiser_1 = otpimiser_1;
-        this.Otpimiser_2 = otpimiser_2;
+        this.Network_1 = obj_1.network;
+        this.Otpimiser_1 = obj_1.optimiser;
+        this.Label_1 = obj_1.label;
+
+        this.Network_2 = obj_2.network;
+        this.Otpimiser_2 = obj_2.optimiser;
+        this.Label_2 = obj_2.label;
+
         this.TrainingData = trainingData;
         this.ValidationData = validationData;
 
@@ -61,7 +66,7 @@ public partial class AnalyserForm : Form
             {
                 new LineSeries
                 {
-                    Title = "Training (L1 & L2)",
+                    Title = $"{this.Label_1} (Training)",
                     Stroke = System.Windows.Media.Brushes.Blue,
 
                     Fill = System.Windows.Media.Brushes.Transparent,
@@ -73,7 +78,7 @@ public partial class AnalyserForm : Form
                 },
                 new LineSeries
                 {
-                    Title = "Validation (L1 & L2)",
+                    Title = $"{this.Label_1} (Validation)",
                     Stroke = System.Windows.Media.Brushes.Blue,
                     StrokeDashArray = new System.Windows.Media.DoubleCollection(new [] { 4d }),
 
@@ -85,7 +90,7 @@ public partial class AnalyserForm : Form
 
                 new LineSeries
                 {
-                    Title = "Training",
+                    Title = $"{this.Label_2} (Training)",
                     Stroke = System.Windows.Media.Brushes.Red,
 
                     Fill = System.Windows.Media.Brushes.Transparent,
@@ -95,7 +100,7 @@ public partial class AnalyserForm : Form
                 },
                 new LineSeries
                 {
-                    Title = "Validation",
+                    Title = $"{this.Label_2} (Validation)",
                     Stroke = System.Windows.Media.Brushes.Red,
                     StrokeDashArray = new System.Windows.Media.DoubleCollection(new [] { 4d }),
 
