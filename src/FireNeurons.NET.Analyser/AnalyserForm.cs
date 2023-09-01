@@ -33,7 +33,8 @@ public partial class AnalyserForm : Form
         Func<Neuron, object?, object, double> loss_getter,
         double chartPrecision = 0.001,
         int miniBatchSize = 1,
-        int epochsPerEpoch = 1)
+        int epochsPerEpoch = 1,
+        double chartBase = 10)
     {
         this.InitializeComponent();
 
@@ -54,13 +55,13 @@ public partial class AnalyserForm : Form
         this.miniBatchSize = miniBatchSize;
         this.epochsPerEpoch = epochsPerEpoch;
 
-        this.InitChart();
+        this.InitChart(chartBase);
     }
 
-    private void InitChart()
+    private void InitChart(double chartBase)
     {
         this.cartesianChart.Series = new SeriesCollection(Mappers.Xy<double>()
-                .Y(v => Math.Log(((1 / this.chartPrecision) * v) + 1, 10)))
+                .Y(v => Math.Log(((1 / this.chartPrecision) * v) + 1, chartBase)))
             {
                 new LineSeries
                 {
@@ -111,8 +112,8 @@ public partial class AnalyserForm : Form
 
         this.cartesianChart.AxisY.Add(new LogarithmicAxis
         {
-            LabelFormatter = value => (this.chartPrecision * (Math.Pow(10, value) - 1)).ToString("G3"),
-            Base = 10,
+            LabelFormatter = value => (this.chartPrecision * (Math.Pow(chartBase, value) - 1)).ToString("G3"),
+            Base = chartBase,
             MinValue = 0,
             Separator = new Separator
             {
