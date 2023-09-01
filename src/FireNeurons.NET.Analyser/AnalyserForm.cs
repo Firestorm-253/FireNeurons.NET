@@ -3,7 +3,6 @@ using LiveCharts.Wpf;
 using LiveCharts.Configurations;
 
 namespace FireNeurons.NET.Analyser;
-using Indexes;
 using Objects;
 using Optimisation;
 
@@ -23,19 +22,19 @@ public partial class AnalyserForm : Form
 
     public string Label_1 { get; init; }
     public string Label_2 { get; init; }
-    
+
     public List<TrainingData> TrainingData { get; init; }
     public List<TrainingData> ValidationData { get; init; }
 
     public AnalyserForm(
         (NeuralNetwork network, IOptimiser optimiser, string label) obj_1,
         (NeuralNetwork network, IOptimiser optimiser, string label) obj_2,
-        List<TrainingData> trainingData,
-        List<TrainingData> validationData,
+        (List<TrainingData> trainingData, List<TrainingData> validationData) data,
         Func<Neuron, object?, object, double> loss_getter,
         double chartPrecision = 0.001,
         int miniBatchSize = 1,
-        int epochsPerEpoch = 1)
+        int epochsPerEpoch = 1,
+        double chartBase = 10)
     {
         this.InitializeComponent();
 
@@ -47,8 +46,8 @@ public partial class AnalyserForm : Form
         this.Otpimiser_2 = obj_2.optimiser;
         this.Label_2 = obj_2.label;
 
-        this.TrainingData = trainingData;
-        this.ValidationData = validationData;
+        this.TrainingData = data.trainingData;
+        this.ValidationData = data.validationData;
 
         this.loss_getter = loss_getter;
 
@@ -56,13 +55,15 @@ public partial class AnalyserForm : Form
         this.miniBatchSize = miniBatchSize;
         this.epochsPerEpoch = epochsPerEpoch;
 
-        this.InitChart();
+        this.InitChart(chartBase);
+
+        this.EvaluateToGraph();
     }
 
-    private void InitChart()
+    private void InitChart(double chartBase)
     {
         this.cartesianChart.Series = new SeriesCollection(Mappers.Xy<double>()
-                .Y(v => Math.Log(((1 / this.chartPrecision) * v) + 1, 10)))
+                .Y(v => Math.Log(((1 / this.chartPrecision) * v) + 1, chartBase)))
             {
                 new LineSeries
                 {
@@ -113,8 +114,9 @@ public partial class AnalyserForm : Form
 
         this.cartesianChart.AxisY.Add(new LogarithmicAxis
         {
-            LabelFormatter = value => (this.chartPrecision * (Math.Pow(10, value) - 1)).ToString("G3"),
-            Base = 10,
+            Title = "Loss",
+            LabelFormatter = value => (this.chartPrecision * (Math.Pow(chartBase, value) - 1)).ToString("G3"),
+            Base = chartBase,
             MinValue = 0,
             Separator = new Separator
             {
@@ -122,16 +124,16 @@ public partial class AnalyserForm : Form
             }
         });
 
-        var iterationsLabels = new string[1_000];
-        for (int i = 0; i < iterationsLabels.Length; i++)
-        {
-            iterationsLabels[i] = (i * (this.TrainingData.Count / this.miniBatchSize)).ToString();
-        }
+        //var iterationsLabels = new string[1_000];
+        //for (int i = 0; i < iterationsLabels.Length; i++)
+        //{
+        //    iterationsLabels[i] = (i * (this.TrainingData.Count / this.miniBatchSize)).ToString();
+        //}
 
         this.cartesianChart.AxisX.Add(new Axis
         {
             Title = "Iterations",
-            Labels = iterationsLabels,
+            //Labels = iterationsLabels,
             MinValue = 0,
         });
 
@@ -150,22 +152,30 @@ public partial class AnalyserForm : Form
         int epochs = int.Parse(this.textBox1.Text);
         for (int epoch = 0; epoch < epochs; epoch++)
         {
-            this.Network_1.Train(this.Otpimiser_1, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
-            this.Network_2.Train(this.Otpimiser_2, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
+            var iterationsData = this.TrainingData.Chunk(this.miniBatchSize);
+            foreach (var data in iterationsData)
+            {
+                this.Network_1.Train(this.Otpimiser_1, data.ToList(), miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
+                this.Network_2.Train(this.Otpimiser_2, data.ToList(), miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
 
-
-            double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
-            double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
-
-            double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
-            double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
-
-            this.cartesianChart.Series[0].Values.Add(eval_1_training);
-            this.cartesianChart.Series[1].Values.Add(eval_1_validation);
-
-            this.cartesianChart.Series[2].Values.Add(eval_2_training);
-            this.cartesianChart.Series[3].Values.Add(eval_2_validation);
+                this.EvaluateToGraph();
+            }
         }
+    }
+
+    public void EvaluateToGraph()
+    {
+        double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
+        double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
+
+        double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
+        double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
+
+        this.cartesianChart.Series[0].Values.Add(eval_1_training);
+        this.cartesianChart.Series[1].Values.Add(eval_1_validation);
+
+        this.cartesianChart.Series[2].Values.Add(eval_2_training);
+        this.cartesianChart.Series[3].Values.Add(eval_2_validation);
     }
 
     public double Evaluate(NeuralNetwork network, List<TrainingData> evaluationDataSet)
