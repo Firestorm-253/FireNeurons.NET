@@ -9,6 +9,7 @@ using Optimisation;
 public partial class AnalyserForm : Form
 {
     private readonly int displayingIteration;
+    private readonly int evaluationSampleSize;
     private readonly double chartPrecision;
     private readonly int miniBatchSize;
     private readonly int epochsPerEpoch;
@@ -33,6 +34,7 @@ public partial class AnalyserForm : Form
         (List<TrainingData> trainingData, List<TrainingData> validationData) data,
         Func<Neuron, object?, object, double> loss_getter,
         int displayingIteration = 1,
+        int evaluationSampleSize = 1000,
         double chartPrecision = 0.001,
         int miniBatchSize = 1,
         int epochsPerEpoch = 1,
@@ -54,6 +56,7 @@ public partial class AnalyserForm : Form
         this.loss_getter = loss_getter;
 
         this.displayingIteration = displayingIteration;
+        this.evaluationSampleSize = evaluationSampleSize;
         this.chartPrecision = chartPrecision;
         this.miniBatchSize = miniBatchSize;
         this.epochsPerEpoch = epochsPerEpoch;
@@ -136,6 +139,7 @@ public partial class AnalyserForm : Form
         this.cartesianChart.AxisX.Add(new Axis
         {
             Title = "Iterations",
+            LabelFormatter = x => $"{(int)(x * this.displayingIteration)}",
             //Labels = iterationsLabels,
             MinValue = 0,
         });
@@ -168,11 +172,11 @@ public partial class AnalyserForm : Form
 
     public void EvaluateToGraph()
     {
-        double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
-        double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
+        double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData.OrderBy(x => Globals.GlobalRandom.Next()).Take(this.evaluationSampleSize).ToList());
+        double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData.OrderBy(x => Globals.GlobalRandom.Next()).Take(this.evaluationSampleSize).ToList());
 
-        double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
-        double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
+        double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData.OrderBy(x => Globals.GlobalRandom.Next()).Take(this.evaluationSampleSize).ToList());
+        double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData.OrderBy(x => Globals.GlobalRandom.Next()).Take(this.evaluationSampleSize).ToList());
 
         this.cartesianChart.Series[0].Values.Add(eval_1_training);
         this.cartesianChart.Series[1].Values.Add(eval_1_validation);
