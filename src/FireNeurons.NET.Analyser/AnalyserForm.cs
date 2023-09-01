@@ -29,8 +29,7 @@ public partial class AnalyserForm : Form
     public AnalyserForm(
         (NeuralNetwork network, IOptimiser optimiser, string label) obj_1,
         (NeuralNetwork network, IOptimiser optimiser, string label) obj_2,
-        List<TrainingData> trainingData,
-        List<TrainingData> validationData,
+        (List<TrainingData> trainingData, List<TrainingData> validationData) data,
         Func<Neuron, object?, object, double> loss_getter,
         double chartPrecision = 0.001,
         int miniBatchSize = 1,
@@ -46,8 +45,8 @@ public partial class AnalyserForm : Form
         this.Otpimiser_2 = obj_2.optimiser;
         this.Label_2 = obj_2.label;
 
-        this.TrainingData = trainingData;
-        this.ValidationData = validationData;
+        this.TrainingData = data.trainingData;
+        this.ValidationData = data.validationData;
 
         this.loss_getter = loss_getter;
 
