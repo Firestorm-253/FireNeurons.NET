@@ -8,6 +8,7 @@ using Optimisation;
 
 public partial class AnalyserForm : Form
 {
+    private readonly int displayingIteration;
     private readonly double chartPrecision;
     private readonly int miniBatchSize;
     private readonly int epochsPerEpoch;
@@ -31,6 +32,7 @@ public partial class AnalyserForm : Form
         (NeuralNetwork network, IOptimiser optimiser, string label) obj_2,
         (List<TrainingData> trainingData, List<TrainingData> validationData) data,
         Func<Neuron, object?, object, double> loss_getter,
+        int displayingIteration = 1,
         double chartPrecision = 0.001,
         int miniBatchSize = 1,
         int epochsPerEpoch = 1,
@@ -51,6 +53,7 @@ public partial class AnalyserForm : Form
 
         this.loss_getter = loss_getter;
 
+        this.displayingIteration = displayingIteration;
         this.chartPrecision = chartPrecision;
         this.miniBatchSize = miniBatchSize;
         this.epochsPerEpoch = epochsPerEpoch;
@@ -152,7 +155,7 @@ public partial class AnalyserForm : Form
         int epochs = int.Parse(this.textBox1.Text);
         for (int epoch = 0; epoch < epochs; epoch++)
         {
-            var iterationsData = this.TrainingData.Chunk(this.miniBatchSize);
+            var iterationsData = this.TrainingData.Chunk(this.miniBatchSize * this.displayingIteration);
             foreach (var data in iterationsData)
             {
                 this.Network_1.Train(this.Otpimiser_1, data.ToList(), miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
