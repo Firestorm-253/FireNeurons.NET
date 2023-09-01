@@ -56,6 +56,8 @@ public partial class AnalyserForm : Form
         this.epochsPerEpoch = epochsPerEpoch;
 
         this.InitChart(chartBase);
+
+        this.EvaluateToGraph();
     }
 
     private void InitChart(double chartBase)
@@ -153,19 +155,21 @@ public partial class AnalyserForm : Form
             this.Network_1.Train(this.Otpimiser_1, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
             this.Network_2.Train(this.Otpimiser_2, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
 
+                this.EvaluateToGraph();
 
-            double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
-            double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
+    public void EvaluateToGraph()
+    {
+        double eval_1_training = this.Evaluate(this.Network_1, this.TrainingData);
+        double eval_1_validation = this.Evaluate(this.Network_1, this.ValidationData);
 
-            double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
-            double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
+        double eval_2_training = this.Evaluate(this.Network_2, this.TrainingData);
+        double eval_2_validation = this.Evaluate(this.Network_2, this.ValidationData);
 
-            this.cartesianChart.Series[0].Values.Add(eval_1_training);
-            this.cartesianChart.Series[1].Values.Add(eval_1_validation);
+        this.cartesianChart.Series[0].Values.Add(eval_1_training);
+        this.cartesianChart.Series[1].Values.Add(eval_1_validation);
 
-            this.cartesianChart.Series[2].Values.Add(eval_2_training);
-            this.cartesianChart.Series[3].Values.Add(eval_2_validation);
-        }
+        this.cartesianChart.Series[2].Values.Add(eval_2_training);
+        this.cartesianChart.Series[3].Values.Add(eval_2_validation);
     }
 
     public double Evaluate(NeuralNetwork network, List<TrainingData> evaluationDataSet)
