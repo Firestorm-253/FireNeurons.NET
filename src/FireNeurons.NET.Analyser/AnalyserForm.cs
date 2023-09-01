@@ -152,10 +152,16 @@ public partial class AnalyserForm : Form
         int epochs = int.Parse(this.textBox1.Text);
         for (int epoch = 0; epoch < epochs; epoch++)
         {
-            this.Network_1.Train(this.Otpimiser_1, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
-            this.Network_2.Train(this.Otpimiser_2, this.TrainingData, miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
+            var iterationsData = this.TrainingData.Chunk(this.miniBatchSize);
+            foreach (var data in iterationsData)
+            {
+                this.Network_1.Train(this.Otpimiser_1, data.ToList(), miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
+                this.Network_2.Train(this.Otpimiser_2, data.ToList(), miniBatchSize: this.miniBatchSize, epochs: this.epochsPerEpoch);
 
                 this.EvaluateToGraph();
+            }
+        }
+    }
 
     public void EvaluateToGraph()
     {
