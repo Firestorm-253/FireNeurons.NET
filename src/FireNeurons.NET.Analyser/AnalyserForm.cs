@@ -3,7 +3,6 @@ using LiveCharts.Wpf;
 using LiveCharts.Configurations;
 
 namespace FireNeurons.NET.Analyser;
-using Indexes;
 using Objects;
 using Optimisation;
 
@@ -23,7 +22,7 @@ public partial class AnalyserForm : Form
 
     public string Label_1 { get; init; }
     public string Label_2 { get; init; }
-    
+
     public List<TrainingData> TrainingData { get; init; }
     public List<TrainingData> ValidationData { get; init; }
 
