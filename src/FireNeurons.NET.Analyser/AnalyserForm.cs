@@ -112,6 +112,7 @@ public partial class AnalyserForm : Form
 
         this.cartesianChart.AxisY.Add(new LogarithmicAxis
         {
+            Title = "Loss",
             LabelFormatter = value => (this.chartPrecision * (Math.Pow(chartBase, value) - 1)).ToString("G3"),
             Base = chartBase,
             MinValue = 0,
@@ -121,16 +122,16 @@ public partial class AnalyserForm : Form
             }
         });
 
-        var iterationsLabels = new string[1_000];
-        for (int i = 0; i < iterationsLabels.Length; i++)
-        {
-            iterationsLabels[i] = (i * (this.TrainingData.Count / this.miniBatchSize)).ToString();
-        }
+        //var iterationsLabels = new string[1_000];
+        //for (int i = 0; i < iterationsLabels.Length; i++)
+        //{
+        //    iterationsLabels[i] = (i * (this.TrainingData.Count / this.miniBatchSize)).ToString();
+        //}
 
         this.cartesianChart.AxisX.Add(new Axis
         {
             Title = "Iterations",
-            Labels = iterationsLabels,
+            //Labels = iterationsLabels,
             MinValue = 0,
         });
 
