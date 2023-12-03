@@ -100,40 +100,36 @@ public partial class NeuralNetwork
         return dto;
     }
 
-    public static NeuralNetworkDto FromJson(string json)
+    public static NeuralNetworkDto FromJson(string json, bool withSpaces = false)
     {
-        return JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = true, })!;
+        return JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = withSpaces, })!;
     }
-    public static string ToJson(NeuralNetworkDto neuralNetworkDto)
+    public static string ToJson(NeuralNetworkDto neuralNetworkDto, bool withSpaces = false)
     {
-        return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = true })!;
+        return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = withSpaces })!;
     }
 
     private static byte[] Zip(string str)
     {
         var bytes = Encoding.UTF8.GetBytes(str);
 
-        using (var memoryStream = new MemoryStream())
+        using var memoryStream = new MemoryStream();
+        using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal))
         {
-            using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal))
-            {
-                gzipStream.Write(bytes, 0, bytes.Length);
-            }
-            return memoryStream.ToArray();
+            gzipStream.Write(bytes, 0, bytes.Length);
         }
+        return memoryStream.ToArray();
     }
 
     private static string UnZip(byte[] bytes)
     {
-        using (var memoryStream = new MemoryStream(bytes))
-        using (var outputStream = new MemoryStream())
+        using var memoryStream = new MemoryStream(bytes);
+        using var outputStream = new MemoryStream();
+        using (var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
         {
-            using (var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-            {
-                gzipStream.CopyTo(outputStream);
-            }
-            var output = outputStream.ToArray();
-            return Encoding.UTF8.GetString(output, 0, output.Length);
+            gzipStream.CopyTo(outputStream);
         }
+        var output = outputStream.ToArray();
+        return Encoding.UTF8.GetString(output, 0, output.Length);
     }
 }
