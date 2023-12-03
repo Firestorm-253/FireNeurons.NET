@@ -100,13 +100,13 @@ public partial class NeuralNetwork
         return dto;
     }
 
-    public static NeuralNetworkDto FromJson(string json)
+    public static NeuralNetworkDto FromJson(string json, bool withSpaces = false)
     {
-        return JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = true, })!;
+        return JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = withSpaces, })!;
     }
-    public static string ToJson(NeuralNetworkDto neuralNetworkDto)
+    public static string ToJson(NeuralNetworkDto neuralNetworkDto, bool withSpaces = false)
     {
-        return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = true })!;
+        return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = withSpaces })!;
     }
 
     private static byte[] Zip(string str)
