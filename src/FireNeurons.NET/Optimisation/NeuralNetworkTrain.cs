@@ -13,7 +13,10 @@ public static class NeuralNetworkTrain
     {
         if (!optimiser.OptimiserDatas.Any())
         {
-            optimiser.CreateData(network);
+            lock (network)
+            {
+                optimiser.CreateData(network);
+            }
         }
 
         for (int epoch = 0; epoch < epochs; epoch++)
@@ -34,16 +37,28 @@ public static class NeuralNetworkTrain
         this NeuralNetwork network,
         IOptimiser optimiser,
         TrainingData trainingData,
+        bool apply = true)
+    {
+        network.Train(optimiser, trainingData, 1, apply);
+    }
+
+    private static void Train(
+        this NeuralNetwork network,
+        IOptimiser optimiser,
+        TrainingData trainingData,
         int miniBatchSize,
         bool apply)
     {
         var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
-        network.Evaluate(trainingData.InputData, true, targetIndexes);
+        lock (network)
+        {
+            network.Evaluate(trainingData.InputData, true, targetIndexes);
 
-        network.TrainTargetLayers(optimiser, trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons, miniBatchSize, apply);
+            network.TrainTargetLayers(optimiser, trainingData.LossDerivativeArgs, trainingData.IgnoreNeurons, miniBatchSize, apply);
 
-        network.TrainHiddenLayers(optimiser, targetIndexes, miniBatchSize, apply);
+            network.TrainHiddenLayers(optimiser, targetIndexes, miniBatchSize, apply);
+        }
     }
 
     private static void TrainTargetLayers(
