@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FireMath.NET" Version="1.0.1.3" />
+    <PackageReference Include="FireMath.NET" Version="1.0.4" />
   </ItemGroup>
 
 </Project>
