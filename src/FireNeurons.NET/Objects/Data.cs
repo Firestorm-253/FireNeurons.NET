@@ -2,6 +2,7 @@
 
 namespace FireNeurons.NET.Objects;
 
+[Serializable]
 public record Data : Data<double[]>
 {
     public Data() : base()
@@ -21,6 +22,8 @@ public record Data : Data<double[]>
         return this;
     }
 }
+
+[Serializable]
 public record Data<T>
 {
     public Dictionary<LayerIndex, T> DataLayers { get; init; } = new();

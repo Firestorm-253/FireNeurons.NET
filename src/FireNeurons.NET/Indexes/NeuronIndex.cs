@@ -3,6 +3,7 @@
 namespace FireNeurons.NET.Indexes;
 using Objects;
 
+[Serializable]
 public readonly struct NeuronIndex : IIndex, IEquatable<NeuronIndex>
 {
     public int Index { get; init; }

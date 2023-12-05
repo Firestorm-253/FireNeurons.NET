@@ -3,6 +3,7 @@
 namespace FireNeurons.NET.Indexes;
 using Objects;
 
+[Serializable]
 public readonly struct LayerIndex : IIndex, IEquatable<LayerIndex>
 {
     public int Index { get; init; }
