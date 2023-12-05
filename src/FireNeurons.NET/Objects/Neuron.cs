@@ -39,6 +39,7 @@ public class Neuron
     {
         this.Index = neuronDto.Index;
         this.Options = neuronDto.Options;
+        this.Bias = neuronDto.Bias;
         this.Layer = layer;
 
         foreach (var connectionDto in neuronDto.Connections)
