@@ -11,14 +11,6 @@ public static class NeuralNetworkTrain
         int miniBatchSize = 1,
         int epochs = 1)
     {
-        if (!optimiser.OptimiserDatas.Any())
-        {
-            lock (network)
-            {
-                optimiser.CreateData(network);
-            }
-        }
-
         for (int epoch = 0; epoch < epochs; epoch++)
         {
             var miniBatches = trainingDataSet.OrderBy(x => GlobalRandom.Next()).Chunk(miniBatchSize);
@@ -49,6 +41,14 @@ public static class NeuralNetworkTrain
         int miniBatchSize,
         bool apply)
     {
+        if (!optimiser.OptimiserDatas.Any())
+        {
+            lock (network)
+            {
+                optimiser.CreateData(network);
+            }
+        }
+
         var targetIndexes = trainingData.LossDerivativeArgs.DataLayers.Keys.ToArray();
 
         lock (network)
