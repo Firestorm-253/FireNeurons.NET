@@ -12,7 +12,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireNeurons.NET", "FireNeur
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireNeurons.NET.Tests", "FireNeurons.NET.Tests\FireNeurons.NET.Tests.csproj", "{8125D313-8E3A-465A-BA1D-C0227A194F9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireNeurons.NET.Analyser", "FireNeurons.NET.Analyser\FireNeurons.NET.Analyser.csproj", "{711D5963-CC5E-4971-B35E-BB9294020AEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireNeurons.NET.Analyser", "FireNeurons.NET.Analyser\FireNeurons.NET.Analyser.csproj", "{711D5963-CC5E-4971-B35E-BB9294020AEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FireNeurons.NET.CNN", "FireNeurons.NET.CNN\FireNeurons.NET.CNN.csproj", "{53930712-DA73-4C08-B77B-220BBEA9CEF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,6 +34,10 @@ Global
 		{711D5963-CC5E-4971-B35E-BB9294020AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{711D5963-CC5E-4971-B35E-BB9294020AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{711D5963-CC5E-4971-B35E-BB9294020AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53930712-DA73-4C08-B77B-220BBEA9CEF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53930712-DA73-4C08-B77B-220BBEA9CEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53930712-DA73-4C08-B77B-220BBEA9CEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53930712-DA73-4C08-B77B-220BBEA9CEF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
