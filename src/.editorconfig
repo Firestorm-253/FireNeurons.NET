@@ -35,6 +35,7 @@ dotnet_style_qualification_for_method = true:warning
 
 # IDE0009: Der Memberzugriff sollte qualifiziert sein.
 dotnet_diagnostic.IDE0009.severity = warning
+dotnet_style_prefer_collection_expression = true:suggestion
 
 [*.cs]
 csharp_space_around_binary_operators = before_and_after
