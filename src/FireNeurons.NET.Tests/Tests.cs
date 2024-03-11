@@ -130,10 +130,10 @@ public class Tests
         var input = new Data3D(data);
 
         var cnn_layer_0 = new ConvolutionLayer(5, 3, input.Depth, 1);
-        var conv_0 = cnn_layer_0.Convolve(input);
+        var conv_0 = cnn_layer_0.Execute(input);
 
         var cnn_layer_1 = new ConvolutionLayer(10, 3, conv_0.Depth, 1);
-        var conv_1 = cnn_layer_1.Convolve(conv_0);
+        var conv_1 = cnn_layer_1.Execute(conv_0);
     }
 
     //[TestMethod]
