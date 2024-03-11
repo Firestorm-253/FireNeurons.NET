@@ -1,6 +1,8 @@
 using System.Diagnostics;
 
 namespace FireNeurons.NET.Tests;
+
+using FireNeurons.NET.CNN;
 using Objects;
 
 [TestClass]
@@ -64,6 +66,27 @@ public class Tests
         data.Add(1, new double[] { 21, -30 });
 
         var results = model.Evaluate(data, false, 3, 4);
+    }
+
+    [TestMethod]
+    public void CNN()
+    {
+        var data = new double[3][][];
+        for (int z = 0; z < data.Length; z++)
+        {
+            data[z] = new double[28][];
+            for (int y = 0; y < data[z].Length; y++)
+            {
+                data[z][y] = new double[28];
+            }
+        }
+        var input = new Data3D(data);
+
+        var cnn_layer_0 = new ConvolutionLayer(5, 3, input.Depth, 1);
+        var conv_0 = cnn_layer_0.Convolve(input);
+
+        var cnn_layer_1 = new ConvolutionLayer(10, 3, conv_0.Depth, 1);
+        var conv_1 = cnn_layer_1.Convolve(conv_0);
     }
 
     //[TestMethod]

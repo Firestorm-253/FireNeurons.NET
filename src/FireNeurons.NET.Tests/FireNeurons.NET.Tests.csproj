@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FireNeurons.NET.CNN\FireNeurons.NET.CNN.csproj" />
     <ProjectReference Include="..\FireNeurons.NET\FireNeurons.NET.csproj" />
   </ItemGroup>
 
