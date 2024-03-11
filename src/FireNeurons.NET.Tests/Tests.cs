@@ -4,11 +4,58 @@ namespace FireNeurons.NET.Tests;
 
 using FireNeurons.NET.CNN;
 using Objects;
+using System.Text;
 
 [TestClass]
 public class Tests
 {
     const int randomSeed = 605013250;
+
+    [TestMethod]
+    public void SerializationComparison()
+    {
+        //# Seed Randomizer
+        GlobalRandom = new Random(randomSeed);
+
+        //# Initialize
+        var model = new NeuralNetwork();
+
+        //# InputLayers
+        model.Add(400, 0, Activation.Identity);
+        model.Add(40, 1, Activation.Sigmoid);
+
+        //# HiddenLayers
+        model.Add(40, 2, Activation.LeakyRelu, 0, 1);
+
+        //# OutputLayers
+        model.Add(40, 3, Activation.LeakyRelu, 2);
+        model.Add(40, 4, Activation.LeakyRelu, 2);
+
+        //# Compile
+        model.Randomize();
+
+
+        var sw = Stopwatch.StartNew();
+        for (int i = 0; i < 10; i++)
+        {
+            var bin = new NeuralNetwork(NeuralNetwork.FromBytes(NeuralNetwork.ToBytes(new(model))));
+        }
+        sw.Stop();
+        var bin_time = sw.ElapsedMilliseconds / 10;
+
+        sw.Restart();
+        for (int i = 0; i < 10; i++)
+        {
+            var json = new NeuralNetwork(NeuralNetwork.FromJson(NeuralNetwork.ToJson(new(model))));
+        }
+        sw.Stop();
+        var json_time = sw.ElapsedMilliseconds / 10;
+
+
+
+        var bin_size = NeuralNetwork.ToBytes(new(model)).Length;
+        var json_size = Encoding.Default.GetBytes(NeuralNetwork.ToJson(new(model))).Length;
+    }
 
     [TestMethod]
     public void SaveLoad()

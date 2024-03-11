@@ -2,6 +2,7 @@
 using Indexes;
 using Objects;
 
+[Serializable]
 public record ConnectionDto
 {
     public ConnectionIndex Index { get; init; }

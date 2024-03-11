@@ -2,6 +2,7 @@
 using Indexes;
 using Objects;
 
+[Serializable]
 public record LayerDto
 {
     public LayerIndex Index { get; init; }

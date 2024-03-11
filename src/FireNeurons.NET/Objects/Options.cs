@@ -1,5 +1,6 @@
 ﻿namespace FireNeurons.NET.Objects;
 
+[Serializable]
 public record Options
 {
     public bool UseBias { get; init; } = true;

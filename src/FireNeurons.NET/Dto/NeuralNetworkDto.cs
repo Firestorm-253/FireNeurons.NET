@@ -1,5 +1,6 @@
 ﻿namespace FireNeurons.NET.Dto;
 
+[Serializable]
 public record NeuralNetworkDto
 {
     public List<LayerDto> Layers { get; init; } = new();

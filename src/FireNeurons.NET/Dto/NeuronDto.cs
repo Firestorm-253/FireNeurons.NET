@@ -2,6 +2,7 @@
 using Indexes;
 using Objects;
 
+[Serializable]
 public record NeuronDto
 {
     public NeuronIndex Index { get; init; }

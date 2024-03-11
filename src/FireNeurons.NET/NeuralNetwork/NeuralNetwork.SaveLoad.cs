@@ -1,6 +1,7 @@
 ﻿using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using PacketManager.dotnet;
 
 namespace FireNeurons.NET;
 
@@ -34,7 +35,7 @@ public partial class NeuralNetwork
         }
     }
 
-    public NeuralNetwork Clone()
+    public NeuralNetwork Clone() // Json is faster but needs more space for saving
     {
         return new(FromJson(ToJson(new(this))));
     }
@@ -58,8 +59,7 @@ public partial class NeuralNetwork
                 break;
             case SaveType.Binary:
                 {
-                    var zipped = Zip(ToJson(dto));
-                    File.WriteAllBytes(file + ".nn", zipped);
+                    File.WriteAllBytes(file + ".nn", ToBytes(dto));
                 }
                 break;
             default: throw new Exception("ERROR: Invalid SaveType!");
@@ -85,9 +85,7 @@ public partial class NeuralNetwork
                 break;
             case ".nn":
                 {
-                    var zipped = File.ReadAllBytes(file);
-                    string json = UnZip(zipped);
-                    dto = JsonSerializer.Deserialize<NeuralNetworkDto>(json, new JsonSerializerOptions() { WriteIndented = false, });
+                    dto = FromBytes(File.ReadAllBytes(file));
                 }
                 break;
             default: throw new Exception("ERROR: Invalid file-format!");
@@ -109,27 +107,15 @@ public partial class NeuralNetwork
         return JsonSerializer.Serialize(neuralNetworkDto, new JsonSerializerOptions() { WriteIndented = withSpaces })!;
     }
 
-    private static byte[] Zip(string str)
+    public static NeuralNetworkDto FromBytes(byte[] bytes)
     {
-        var bytes = Encoding.UTF8.GetBytes(str);
-
-        using var memoryStream = new MemoryStream();
-        using (var gzipStream = new GZipStream(memoryStream, CompressionLevel.Optimal))
-        {
-            gzipStream.Write(bytes, 0, bytes.Length);
-        }
-        return memoryStream.ToArray();
+        var pr = new PacketReader(bytes);
+        return pr.ReadObject<NeuralNetworkDto>();
     }
-
-    private static string UnZip(byte[] bytes)
+    public static byte[] ToBytes(NeuralNetworkDto dto)
     {
-        using var memoryStream = new MemoryStream(bytes);
-        using var outputStream = new MemoryStream();
-        using (var gzipStream = new GZipStream(memoryStream, CompressionMode.Decompress))
-        {
-            gzipStream.CopyTo(outputStream);
-        }
-        var output = outputStream.ToArray();
-        return Encoding.UTF8.GetString(output, 0, output.Length);
+        var pw = new PacketWriter();
+        pw.WriteT(dto);
+        return pw.GetBytes();
     }
 }
